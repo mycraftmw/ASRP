@@ -22,7 +22,7 @@ namespace ASRP
 	{
 		public MainWindow()
 		{
-			;;
+			;
 		}
 	}
 }
