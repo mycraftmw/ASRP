@@ -3,24 +3,24 @@ namespace ASRP
 {
     class SubwayMap
     {
-        private ArrayList stations;
-        private ArrayList connections;
+        public ArrayList Stations { get; }
+        public ArrayList Connections { get; }
         public SubwayMap()
         {
-            stations = new ArrayList();
-            connections = new ArrayList();
+            Stations = new ArrayList();
+            Connections = new ArrayList();
         }
 
         public bool HasStation(string stationName)
         {
-            return stations.Contains(new Station(stationName));
+            return Stations.Contains(new Station(stationName));
         }
         public void AddStation(string stationName)
         {
             if (!HasStation(stationName))
             {
                 Station station = new Station(stationName);
-                stations.Add(station);
+                Stations.Add(station);
             }
         }
         public void AddConnection(string station1Name, string station2Name, string lineName)
@@ -30,7 +30,7 @@ namespace ASRP
                 Station station1 = new Station(station1Name);
                 Station station2 = new Station(station2Name);
                 Connection connection = new Connection(station1, station2, lineName);
-                connections.Add(connection);
+                Connections.Add(connection);
             }
             else
             {

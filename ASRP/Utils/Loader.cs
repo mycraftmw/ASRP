@@ -2,6 +2,5 @@
 {
     class Loader
     {
-		private Subway subway;
     }
 }
