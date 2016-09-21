@@ -1,7 +1,0 @@
-namespace ASRP
-{
-    class Loader
-    {
-        
-    }
-}
