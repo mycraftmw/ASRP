@@ -1,25 +1,26 @@
-using System.Collections;
+using System.Collections.Generic;
+
 namespace ASRP
 {
     class SubwayMap
     {
-        public ArrayList Stations { get; }
-        public ArrayList Connections { get; }
+        public List<Station> Stations { get; }
+        public List<Connection> Connections { get; }
         public SubwayMap()
         {
-            Stations = new ArrayList();
-            Connections = new ArrayList();
+            Stations = new List<Station>();
+            Connections = new List<Connection>();
         }
 
         public bool HasStation(string stationName)
         {
-            return Stations.Contains(new Station(stationName));
+            return Stations.Exists(which => which.Name == stationName);
         }
-        public void AddStation(string stationName)
+        public void AddStation(string stationName, double x, double y)
         {
             if (!HasStation(stationName))
             {
-                Station station = new Station(stationName);
+                Station station = new Station(stationName, x, y);
                 Stations.Add(station);
             }
         }
@@ -27,8 +28,8 @@ namespace ASRP
         {
             if (HasStation(station1Name) && HasStation(station2Name))
             {
-                Station station1 = new Station(station1Name);
-                Station station2 = new Station(station2Name);
+                Station station1 = Stations.Find(which => which.Name.Equals(station1Name));
+                Station station2 = Stations.Find(which => which.Name.Equals(station2Name));
                 Connection connection = new Connection(station1, station2, lineName);
                 Connections.Add(connection);
             }

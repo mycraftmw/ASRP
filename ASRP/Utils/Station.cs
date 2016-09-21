@@ -5,10 +5,14 @@ namespace ASRP
         private static int ID = 0;
         public int Id { get; }
         public string Name { get; }
-        public Station(string name)
+        public double X { get; }
+        public double Y { get; }
+        public Station(string name, double x, double y)
         {
             this.Name = name;
             this.Id = ++ID;
+            this.X = x;
+            this.Y = y;
         }
         public override bool Equals(object obj)
         {
@@ -16,12 +20,13 @@ namespace ASRP
             {
                 return false;
             }
-            return string.Equals(((Station)obj).Name, this.Name, System.StringComparison.CurrentCultureIgnoreCase);
+            Station o = (Station)obj;
+            return o.Name == this.Name && o.X == this.X && o.Y == this.Y;
         }
 
         public override int GetHashCode()
         {
-            return this.Name.ToLower().GetHashCode();
+            return this.Name.GetHashCode();
         }
 
         public override string ToString()
