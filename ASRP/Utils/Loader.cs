@@ -1,0 +1,7 @@
+namespace ASRP
+{
+    class Loader
+    {
+        
+    }
+}
