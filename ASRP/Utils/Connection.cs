@@ -1,4 +1,4 @@
-﻿namespace ASRP
+namespace ASRP
 {
     class Connection
     {
