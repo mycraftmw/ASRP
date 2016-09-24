@@ -2,13 +2,13 @@ namespace ASRP
 {
     class Connection
     {
-        public Station begin { get; }
-        public Station end { get; }
+        public Station BeginStation { get; }
+        public Station EndStation { get; }
         public string LineName { get; }
-        public Connection(Station begin, Station end, string lineName)
+        public Connection(Station beginStation, Station endStation, string lineName)
         {
-            this.begin = begin;
-            this.end = end;
+            this.BeginStation = beginStation;
+            this.EndStation = endStation;
             this.LineName = lineName;
         }
         public override bool Equals(object obj)
@@ -17,11 +17,11 @@ namespace ASRP
             {
                 return false;
             }
-            return this.LineName == ((Connection)obj).LineName && this.begin.Equals(((Connection)obj).begin) && this.end.Equals(((Connection)obj).end);
+            return this.LineName == ((Connection)obj).LineName && this.BeginStation.Equals(((Connection)obj).BeginStation) && this.EndStation.Equals(((Connection)obj).EndStation);
         }
         public override int GetHashCode()
         {
-            return (LineName + "|" + begin + "|" + end).GetHashCode();
+            return (LineName + "|" + BeginStation + "|" + EndStation).GetHashCode();
         }
     }
 }

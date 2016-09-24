@@ -10,7 +10,7 @@ namespace ASRP
         public Station(string name, double x, double y)
         {
             this.Name = name;
-            this.Id = ++ID;
+            this.Id = ID++;
             this.X = x;
             this.Y = y;
         }

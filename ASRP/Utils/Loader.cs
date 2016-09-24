@@ -10,6 +10,7 @@ namespace ASRP
         public Loader()
         {
             SubwayMap = new SubwayMap();
+            SubwayMap.AddStation("*", 0, 0);
         }
         public SubwayMap LoadFromXMLFile(string path)
         {
@@ -21,7 +22,7 @@ namespace ASRP
             {
                 throw new FormatException("文件类型错误！");
             }
-            
+
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
             XmlNodeList lines = doc.DocumentElement.ChildNodes;
