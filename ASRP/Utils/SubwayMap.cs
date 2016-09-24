@@ -63,34 +63,28 @@ namespace ASRP
         }
         public List<Connection> GetDirections(string beginStationName, string endStationName, string mode)
         {
-            int TRANSFERCOST =
+            if (!HasStation(beginStationName) || !HasStation(endStationName)) throw new ArgumentException("站点不存在！");
+            int transferCost =
             mode == "-b" ? 0 :
             mode == "-c" ? 10000 :
             -1;
-            if (TRANSFERCOST < 0)
-            {
-                throw new AggregateException("模式错误");
-            }
-            if (!HasStation(beginStationName) || !HasStation(endStationName))
-            {
-                throw new ArgumentException("站点不存在！");
-            }
-            if (beginStationName == endStationName)
-            {
-                return new List<Connection>();
-            }
+            if (transferCost < 0) throw new AggregateException("模式错误");
+
+            if (beginStationName == endStationName) return new List<Connection>();
 
             Station beginStation = Stations.Find(x => x.Name == beginStationName);
             Station endStation = Stations.Find(x => x.Name == endStationName);
             Queue<Station> queue = new Queue<Station>();
             Hashtable routeMap = new Hashtable();
-            routeMap.Add(beginStation, new List<List<Connection>>());
-            Connection initConnection = new Connection(Stations.Find(x => x.Id == 0), Stations.Find(x => x.Id == 0), "*");
+            List<List<Connection>> initRouteList = new List<List<Connection>>();
             List<Connection> initRoute = new List<Connection>();
+            Connection initConnection = new Connection(Stations.Find(x => x.Id == 0), Stations.Find(x => x.Id == 0), "*");
             initRoute.Add(initConnection);
-            ((List<List<Connection>>)routeMap[beginStation]).Add(initRoute);
-
+            initRouteList.Add(initRoute);
+            routeMap.Add(beginStation, initRouteList);
             queue.Enqueue(beginStation);
+            List<List<Connection>> tRouteList = null;
+            List<Connection> tRoute = null;
             while (queue.Count != 0)
             {
                 Station now = queue.Dequeue();
@@ -99,63 +93,71 @@ namespace ASRP
                 {
                     routeList.ForEach(route =>
                     {
-                        int cost = route.Count + 1 + (route.Count != 1 && route.FindLast(x => true).LineName != line.LineName ? TRANSFERCOST : 0);
-                        if (!routeMap.Contains(line.EndStation))
+                        if (!routeMap.Contains(line.EndStation)) routeMap.Add(line.EndStation, new List<List<Connection>>());
+                        tRouteList = (List<List<Connection>>)routeMap[line.EndStation];
+                        int alreadyCost = CountCost(mode, tRouteList.Find(x => true));
+                        int nowCost = CountCost(mode, route) + (mode == "-b" ? 1 : mode == "-c" && route.Count != 1 && route.FindLast(x => true).LineName != line.LineName ? 1 : 0);
+                        if (nowCost < alreadyCost)
                         {
-                            routeMap.Add(line.EndStation, new List<List<Connection>>());
-                        }
-                        List<List<Connection>> endStationRouteList = (List<List<Connection>>)routeMap[line.EndStation];
-                        int judgeOld = endStationRouteList.Count == 0 ? int.MaxValue : endStationRouteList[0].Count;
-                        int judgeCost = cost;
-                        if (TRANSFERCOST > 0)
-                        {
-                            judgeCost /= TRANSFERCOST;
-                            judgeOld /= TRANSFERCOST;
-                        }
-                        // System.Console.WriteLine(now + " " + line.LineName + " " + line.EndStation + " " + (int)dis[now] + " " + cost);
-                        if (judgeOld > judgeCost)
-                        {
-                            // System.Console.WriteLine("update " + line.EndStation + " with " + (int)dis[line.EndStation]);
-                            endStationRouteList = new List<List<Connection>>();
-                            List<Connection> tRoute = new List<Connection>(route);
+                            tRouteList = new List<List<Connection>>();
+                            tRoute = new List<Connection>(route);
                             tRoute.Add(line);
-                            endStationRouteList.Add(tRoute);
-                            if (!queue.Contains(line.EndStation))
+                            tRouteList.Add(tRoute);
+                            routeMap[line.EndStation] = tRouteList;
+                            if (!queue.Contains(line.EndStation)) queue.Enqueue(line.EndStation);
+                        }
+                        else if (nowCost == alreadyCost)
+                        {
+                            tRoute = new List<Connection>(route);
+                            tRoute.Add(line);
+                            int k = CountCost(mode, tRoute);
+                            if (!tRouteList.Exists(x => x.FindLast(t => true).LineName == line.LineName && CountCost(mode, x) <= k))
                             {
-                                queue.Enqueue(line.EndStation);
+                                tRouteList.Add(tRoute);
+                                if (!queue.Contains(line.EndStation)) queue.Enqueue(line.EndStation);
                             }
-                        }
-                        else if (judgeOld == judgeCost)
-                        {
-                            List<Connection> tRoute = new List<Connection>(route);
-                            tRoute.Add(line);
-                            endStationRouteList.Add(tRoute);
                         }
                     });
                 });
             }
-            if (!routeMap.Contains(endStation))
-            {
-                throw new ArgumentException("站点不连通");
-            }
-            List<List<Connection>> tRouteList = (List<List<Connection>>)routeMap[endStation];
-            System.Console.WriteLine(tRouteList.Count);
-            List<Connection> ansList = new List<Connection>();
+
+            if (!routeMap.Contains(endStation)) throw new ArgumentException("站点不连通");
+
+            tRouteList = (List<List<Connection>>)routeMap[endStation];
+            tRoute = tRouteList[0];
             tRouteList.ForEach(x =>
             {
-                ansList = ansList.Count == 0 ? x : ansList.Count > x.Count ? x : ansList;
+                if (tRoute.Count > x.Count) tRoute = x;
+                else if (tRoute.Count == x.Count) tRoute = CountCost("-c", tRoute) > CountCost("-c", x) ? x : tRoute;
             });
-            return ansList;
+            return tRoute;
+        }
+
+        private int CountCost(string mode, List<Connection> list)
+        {
+            if (list == null || list.Count == 0) return int.MaxValue;
+            if (mode == "-b")
+            {
+                return list.Count;
+            }
+            else if (mode == "-c")
+            {
+                if (list.Count <= 2) return 0;
+                int a = 0;
+                string last = "*";
+                list.ForEach(x => { if (x.LineName != last) { a++; last = x.LineName; } });
+                return a;
+            }
+            else
+                return -1;
+            throw new NotImplementedException();
         }
         public List<Station> GetLine(string lineName)
         {
             List<Station> line = new List<Station>();
             Connections.FindAll(x => x.LineName == lineName).ForEach(x =>
             {
-                if (!line.Contains(x.BeginStation))
-                {
-                    line.Add(x.BeginStation);
-                }
+                if (!line.Contains(x.BeginStation)) line.Add(x.BeginStation);
             });
             return line;
         }

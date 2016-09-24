@@ -56,11 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Program.cs" />
-    <Compile Include="Utils\Connection.cs" />
-    <Compile Include="Utils\Loader.cs" />
-    <Compile Include="Utils\Printer.cs" />
-    <Compile Include="Utils\Station.cs" />
-    <Compile Include="Utils\SubwayMap.cs" />
+    <Compile Include="Utils\*.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

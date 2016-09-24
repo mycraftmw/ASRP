@@ -12,13 +12,14 @@ namespace ASRP
         }
         public void PrintDirections(List<Connection> route)
         {
-            if (route == null || route.Count == 0)
+            if (route == null || route.Count < 2)
             {
                 output.WriteLine("0");
                 output.Flush();
                 return;
             }
-            output.WriteLine(route.Count + 1);
+            output.WriteLine(route.Count);
+            route.RemoveAt(0);
             string ls = route[0].LineName;
             route.ForEach(x =>
             {
