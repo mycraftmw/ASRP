@@ -22,12 +22,10 @@ namespace ASRP
             }
             return this.Id == ((Station)obj).Id;
         }
-
         public override int GetHashCode()
         {
             return this.Id;
         }
-
         public override string ToString()
         {
             return this.Name;
