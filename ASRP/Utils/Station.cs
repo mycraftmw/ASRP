@@ -20,13 +20,12 @@ namespace ASRP
             {
                 return false;
             }
-            Station o = (Station)obj;
-            return o.Name == this.Name && o.X == this.X && o.Y == this.Y;
+            return this.Id == ((Station)obj).Id;
         }
 
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode();
+            return this.Id;
         }
 
         public override string ToString()
