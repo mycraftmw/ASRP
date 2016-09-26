@@ -16,8 +16,10 @@
             <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
 
+        <local:SubwayGraph Grid.Row="0" Grid.Column="0"/>
 
         <StackPanel x:Name="stackPanel_FunctionArea" Grid.Row="0" Grid.Column="1" Orientation="Vertical">
+            
             <StackPanel.Resources>
                 <local:Cities x:Key="cities"/>
             </StackPanel.Resources>

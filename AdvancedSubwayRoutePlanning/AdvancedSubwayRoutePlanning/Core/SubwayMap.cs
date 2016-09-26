@@ -8,11 +8,13 @@ namespace Core
     {
         public List<Station> Stations { get; }
         public List<Connection> Connections { get; }
+        public Hashtable SubwayLines { get; }
         private Hashtable map;
         public SubwayMap()
         {
             this.Stations = new List<Station>();
             this.Connections = new List<Connection>();
+            this.SubwayLines = new Hashtable();
             this.map = new Hashtable();
         }
 
@@ -61,6 +63,12 @@ namespace Core
                 throw new System.ArgumentException("Invalid Connection!");
             }
         }
+
+        public void AddSubwayLine(string name, string color)
+        {
+            SubwayLines.Add(name, new SubwayLine(name, color));
+        }
+
         public List<Connection> GetDirections(string beginStationName, string endStationName, string mode)
         {
             int TRANSFERCOST =

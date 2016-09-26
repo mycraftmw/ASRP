@@ -3,17 +3,27 @@ using System.Collections.Generic;
 using AdvancedSubwayRoutePlanning;
 namespace Core
 {
-    class Function
+    class BackgroundCore
     {
+        private static Loader Loader = new Loader();
+        private static Printer Printer = new Printer(System.Console.OpenStandardOutput());
+        private static SubwayMap subwayMap;
+        private static List<Connection> route = null;
+
+        public BackgroundCore()
+        {
+            subwayMap = Loader.LoadFromXMLFile("subway.xml");
+        }
+
+        public static SubwayMap SubwayMap
+        {
+            get { return subwayMap; }
+        }
+
         public static void SelectFunction(MainWindow mainWindow, string[] args)
         {
             try
             {
-                Loader Loader = new Loader();
-                Printer Printer = new Printer(System.Console.OpenStandardOutput());
-                SubwayMap SubwayMap = Loader.LoadFromXMLFile("subway.xml");
-                List<Connection> route = null;
-
                 mainWindow.Hide();
 
                 if (args.Length == 0)
@@ -23,7 +33,7 @@ namespace Core
                         string input = System.Console.ReadLine();
                         if (input != "exit")
                         {
-                            Printer.PrintSubwayLine(SubwayMap.GetLine(input));
+                            Printer.PrintSubwayLine(subwayMap.GetLine(input));
                         }
                         else
                         {
@@ -37,7 +47,7 @@ namespace Core
                 }
                 else if (args.Length == 3)
                 {
-                    route = SubwayMap.GetDirections(args[1], args[2], args[0]);
+                    route = subwayMap.GetDirections(args[1], args[2], args[0]);
                     Printer.PrintDirections(route);
                 }
                 else
