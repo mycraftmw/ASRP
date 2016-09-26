@@ -78,8 +78,8 @@ namespace AdvancedSubwayRoutePlanning
 
         private void DrawConnection(DrawingContext dc, Connection connection)
         {
-            Point pt1 = new Point(connection.beginStation.X, connection.beginStation.Y);
-            Point pt2 = new Point(connection.endStation.X, connection.endStation.Y);
+            Point pt1 = new Point(connection.BeginStation.X, connection.BeginStation.Y);
+            Point pt2 = new Point(connection.EndStation.X, connection.EndStation.Y);
 
             Pen pen = new Pen(new SolidColorBrush((hexToColor(((SubwayLine)subwayMap.SubwayLines.Find((SubwayLine line) => line.Name == connection.LineName)).Color))), 5);
             pen.LineJoin = PenLineJoin.Round;

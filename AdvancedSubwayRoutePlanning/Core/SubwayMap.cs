@@ -32,7 +32,7 @@ namespace Core
         }
         public bool HasConnection(string begin, string end, string lineName)
         {
-            return Connections.Exists(x => x.beginStation.Name == begin && x.endStation.Name == end && x.LineName == lineName);
+            return Connections.Exists(x => x.BeginStation.Name == begin && x.EndStation.Name == end && x.LineName == lineName);
         }
         public void AddConnection(string begin, string end, string lineName)
         {
@@ -104,14 +104,14 @@ namespace Core
                 ((List<Connection>)map[now]).ForEach(x =>
                 {
                     int cost = 1 + (!now.Equals(beginStation) && comeConnection.LineName != x.LineName ? TRANSFERCOST : 0);
-                    if ((int)dis[x.endStation] > (int)dis[now] + cost)
+                    if ((int)dis[x.EndStation] > (int)dis[now] + cost)
                     {
-                        dis[x.endStation] = (int)dis[now] + cost;
-                        pre[x.endStation] = new List<Connection>((List<Connection>)pre[now]);
-                        ((List<Connection>)pre[x.endStation]).Add(x);
-                        if (!queue.Contains(x.endStation))
+                        dis[x.EndStation] = (int)dis[now] + cost;
+                        pre[x.EndStation] = new List<Connection>((List<Connection>)pre[now]);
+                        ((List<Connection>)pre[x.EndStation]).Add(x);
+                        if (!queue.Contains(x.EndStation))
                         {
-                            queue.Enqueue(x.endStation);
+                            queue.Enqueue(x.EndStation);
                         }
                     }
                 });
@@ -123,9 +123,9 @@ namespace Core
             List<Station> line = new List<Station>();
             Connections.FindAll(x => x.LineName == lineName).ForEach(x =>
             {
-                if (!line.Contains(x.beginStation))
+                if (!line.Contains(x.BeginStation))
                 {
-                    line.Add(x.beginStation);
+                    line.Add(x.BeginStation);
                 }
             });
             return line;

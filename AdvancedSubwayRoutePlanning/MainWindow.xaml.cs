@@ -43,10 +43,10 @@ namespace AdvancedSubwayRoutePlanning
 
             displayRouteUnitList.Clear();
 
-            displayRouteUnitList.Add(new DisplayRouteUnit(route[0].beginStation.Name, route[0].LineName));
+            displayRouteUnitList.Add(new DisplayRouteUnit(route[0].BeginStation.Name, route[0].LineName));
             foreach (Connection connection in route)
             {
-                displayRouteUnitList.Add(new DisplayRouteUnit(connection.endStation.Name, connection.LineName));
+                displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
             }
 
             listView_Route.ItemsSource = displayRouteUnitList;

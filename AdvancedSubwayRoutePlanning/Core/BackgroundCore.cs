@@ -5,22 +5,17 @@ namespace Core
 {
     class BackgroundCore
     {
-        private static Loader Loader = new Loader();
-        public static Printer Printer = new Printer(System.Console.OpenStandardOutput());
-        private static SubwayMap subwayMap;
-        private static List<Connection> route = null;
+        private Loader Loader = new Loader();
+        public Printer Printer = new Printer(System.Console.OpenStandardOutput());
+        public SubwayMap SubwayMap;
+        private List<Connection> route = null;
 
         public BackgroundCore()
         {
-            subwayMap = Loader.LoadFromXMLFile("subway.xml");
+            SubwayMap = Loader.LoadFromXMLFile("subway.xml");
         }
 
-        public static SubwayMap SubwayMap
-        {
-            get { return subwayMap; }
-        }
-
-        public static void SelectFunction(MainWindow mainWindow, string[] args)
+        public void SelectFunction(MainWindow mainWindow, string[] args)
         {
             try
             {
@@ -33,7 +28,7 @@ namespace Core
                         string input = System.Console.ReadLine();
                         if (input != "exit")
                         {
-                            Printer.PrintSubwayLine(subwayMap.GetLine(input));
+                            Printer.PrintSubwayLine(SubwayMap.GetLine(input));
                         }
                         else
                         {
@@ -47,7 +42,7 @@ namespace Core
                 }
                 else if (args.Length == 3)
                 {
-                    route = subwayMap.GetDirections(args[1], args[2], args[0]);
+                    route = SubwayMap.GetDirections(args[1], args[2], args[0]);
                     Printer.PrintDirections(route);
                 }
                 else
