@@ -38,7 +38,7 @@ namespace Core
                 {
                     XmlAttributeCollection a = sta.Attributes;
                     bool b;
-                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "") b = false;
+                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == ""|| a.GetNamedItem("iu").InnerXml == "false") b = false;
                     else b = true;
                     if (!b) continue;
                     string stationName= a.GetNamedItem("sid").InnerXml;
