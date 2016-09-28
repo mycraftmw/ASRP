@@ -31,14 +31,13 @@ namespace Core
                 string lineName = eachline.Attributes.GetNamedItem("lid").InnerXml;
                 string lineColor = eachline.Attributes.GetNamedItem("lc").InnerXml.Remove(0,2);
                 SubwayMap.AddSubwayLine(lineName, "#" + lineColor);
-                Console.WriteLine(lineName);
                 XmlNodeList stations = eachline.ChildNodes;
                 string lastName = "";
                 foreach (XmlNode sta in stations)
                 {
                     XmlAttributeCollection a = sta.Attributes;
                     bool b;
-                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == ""|| a.GetNamedItem("iu").InnerXml == "false") b = false;
+                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "" || a.GetNamedItem("iu").InnerXml == "false") b = false;
                     else b = true;
                     if (!b) continue;
                     string stationName= a.GetNamedItem("sid").InnerXml;
@@ -48,23 +47,34 @@ namespace Core
                     SubwayMap.AddStation(stationName, x, y, isTransfer);
                     if (lastName != "")
                     {
-                        string c = lastName.CompareTo(stationName)>0?stationName:lastName;
-                        string d = lastName.CompareTo(stationName)>0?lastName:stationName;
-                        SubwayMap.AddConnection(c, d, lineName, SubwayMap.CountConnection(c, d));
-                        SubwayMap.AddConnection(d, c, lineName, -1);
+                        CheckDoubleLine(stationName, lastName, lineName);
                     }
                     lastName = stationName;
                 }
                 if (eachline.Attributes.GetNamedItem("loop").InnerXml == "true")
                 {
-                    string fs = stations[0].Attributes.GetNamedItem("sid").InnerXml;
-                    string c = lastName.CompareTo(fs)>0?fs:lastName;
-                    string d = lastName.CompareTo(fs)>0?lastName:fs;
-                    SubwayMap.AddConnection(c, d, lineName, SubwayMap.CountConnection(c, d));
-                    SubwayMap.AddConnection(d, c, lineName, -1);
+                    CheckDoubleLine(lastName, stations[0].Attributes.GetNamedItem("sid").InnerXml, lineName);
                 }
             }
             return this.SubwayMap;
+        }
+
+        private void CheckDoubleLine(string sa, string sb, string lineName)
+        {
+            string a=sa.CompareTo(sb)>0?sa:sb;
+            string b=a==sa?sb:sa;
+            if (SubwayMap.CountConnection(a, b) > 0)
+            {
+                SubwayMap.Connections.Find(x => x.BeginStation.Name == a && x.EndStation.Name == b).Type = 1;
+                SubwayMap.AddConnection(a, b, lineName, 2);
+                SubwayMap.AddConnection(b, a, lineName, -1);
+            }
+            else
+            {
+                SubwayMap.AddConnection(a, b, lineName, 0);
+                SubwayMap.AddConnection(b, a, lineName, -1);
+            }
+
         }
     }
 }
