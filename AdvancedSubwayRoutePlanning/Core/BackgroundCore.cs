@@ -15,7 +15,7 @@ namespace Core
         private BackgroundCore()
         {
             loader = new Loader();
-            SubwayMap = loader.LoadFromXMLFile("map/beijing-subway.xml");
+            SubwayMap = loader.LoadFromXMLFile(@"map\beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
         public static BackgroundCore GetBackgroundCore()
@@ -26,7 +26,7 @@ namespace Core
         public void RefreshMap(string CityName)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load("map/subway-list.xml");
+            doc.Load(@"map\subway-list.xml");
             XmlNodeList cities = doc.DocumentElement.ChildNodes;
             SubwayMap = null;
             foreach (XmlNode city in cities)

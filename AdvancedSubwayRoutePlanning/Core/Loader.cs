@@ -32,12 +32,14 @@ namespace Core
                 string lineName = eachline.Attributes.GetNamedItem("lid").InnerXml;
                 string lineColor = eachline.Attributes.GetNamedItem("lc").InnerXml.Remove(0,2);
                 SubwayMap.AddSubwayLine(lineName, lineColor);
-                XmlNodeList stations = eachline.SelectSingleNode("stations").ChildNodes;
+                XmlNodeList stations = eachline.ChildNodes;
                 string lastName = "";
                 foreach (XmlNode sta in stations)
                 {
                     XmlAttributeCollection a = sta.Attributes;
-                    bool b = Convert.ToBoolean(a.GetNamedItem("iu").InnerXml);
+                    bool b;
+                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "") b = false;
+                    else b = true;
                     if (!b) continue;
                     string stationName= a.GetNamedItem("sid").InnerXml;
                     double x = Convert.ToDouble(a.GetNamedItem("x").InnerXml);
@@ -50,16 +52,16 @@ namespace Core
                         string d = lastName.CompareTo(stationName)>0?lastName:stationName;
                         SubwayMap.AddConnection(c, d, lineName, SubwayMap.CountConnection(c, d));
                         SubwayMap.AddConnection(d, c, lineName, -1);
-                        lastName = stationName;
                     }
+                    lastName = stationName;
                 }
                 if (eachline.Attributes.GetNamedItem("loop").InnerXml == "true")
                 {
-                    string fs = stations.Item(0).Attributes.GetNamedItem("sid").InnerXml;
+                    string fs = stations[0].Attributes.GetNamedItem("sid").InnerXml;
                     string c = lastName.CompareTo(fs)>0?fs:lastName;
                     string d = lastName.CompareTo(fs)>0?lastName:fs;
                     SubwayMap.AddConnection(c, d, lineName, SubwayMap.CountConnection(c, d));
-                    SubwayMap.AddConnection(c, d, lineName, -1);
+                    SubwayMap.AddConnection(d, c, lineName, -1);
                 }
             }
             return this.SubwayMap;
