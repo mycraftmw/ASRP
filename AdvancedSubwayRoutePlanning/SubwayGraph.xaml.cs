@@ -78,14 +78,14 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawBackground(DrawingContext dc)
         {
-            Rect rc = new Rect(0, 0, this.ActualWidth, this.ActualHeight);
+            Rect rc = new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(this.ActualWidth / zoomScale), Math.Abs(this.ActualHeight / zoomScale));
             dc.DrawRectangle(Brushes.White, new Pen(Brushes.Black, 0), rc);
         }
 
         private void drawFrame(DrawingContext dc)
         {
-            RectangleGeometry rect1 = new RectangleGeometry(new Rect(-scrollX, -scrollY, this.ActualWidth, this.ActualHeight));
-            RectangleGeometry rect2 = new RectangleGeometry(new Rect(-scrollX, -scrollY, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight));
+            RectangleGeometry rect1 = new RectangleGeometry(new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(this.ActualWidth / zoomScale), Math.Abs(this.ActualHeight / zoomScale)));
+            RectangleGeometry rect2 = new RectangleGeometry(new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(((App)App.Current).MainWindow.ActualWidth / zoomScale), Math.Abs(((App)App.Current).MainWindow.ActualHeight / zoomScale)));
 
             GeometryGroup group = new GeometryGroup();
             group.FillRule = FillRule.EvenOdd;
@@ -148,7 +148,7 @@ namespace AdvancedSubwayRoutePlanning
             //双线并轨，Type = 1 或 2 为不同方向的平移
             else if (connection.Type > 0)
             {
-                double scale = (2 * pen.Thickness) / Distance(pt1, pt2);
+                double scale = (pen.Thickness / 2) / Distance(pt1, pt2);
 
                 double angle = (double)(Math.PI / 2);
                 if (connection.Type == 2)
@@ -201,7 +201,7 @@ namespace AdvancedSubwayRoutePlanning
                 return;
 
             //绘制白色遮罩层
-            Rect rc = new Rect(-scrollX, -scrollY, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight);
+            Rect rc = new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(((App)App.Current).MainWindow.ActualWidth / zoomScale), Math.Abs(((App)App.Current).MainWindow.ActualHeight / zoomScale));
             dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(200, 245, 245, 245)), new Pen(Brushes.Black, 0), rc);
 
             //绘制当前乘车路线

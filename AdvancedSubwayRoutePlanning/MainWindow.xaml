@@ -32,7 +32,7 @@
             </Grid.RowDefinitions>
 
             <GroupBox x:Name="groupBox_Cities" Header="城市" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
-                <ComboBox x:Name="comboBox_Cities" HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" ItemsSource="{StaticResource cities}" IsReadOnly="True" Text="北京" Margin="0,5,0,5"/>
+                <ComboBox x:Name="comboBox_Cities" HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" ItemsSource="{StaticResource cities}" IsReadOnly="True" Text="北京" Margin="0,5,0,5" DropDownOpened="comboBox_Cities_DropDownOpened" SelectionChanged="comboBox_Cities_SelectionChanged"/>
             </GroupBox>
 
             <GroupBox x:Name="groupBox_Route" Header="路径规划" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0">

@@ -12,6 +12,7 @@ namespace Core
         private Hashtable map;
         public Station StartStation;
         public Station EndStation;
+        public List<Connection> CurRoute;
         public SubwayMap()
         {
             this.Stations = new List<Station>();

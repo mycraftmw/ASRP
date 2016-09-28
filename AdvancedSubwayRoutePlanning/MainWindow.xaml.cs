@@ -25,7 +25,7 @@ namespace AdvancedSubwayRoutePlanning
     {
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
         private ObservableCollection<string> displayStationsName = new ObservableCollection<string>();
-        private SubwayMap subwayMap;
+        public SubwayMap subwayMap;
 
         public MainWindow()
         {
@@ -87,13 +87,24 @@ namespace AdvancedSubwayRoutePlanning
         {
             this.comboBox_EndStation.IsDropDownOpen = true;
         }
+
+        private void comboBox_Cities_DropDownOpened(object sender, EventArgs e)
+        {
+            ((Cities)this.stackPanel_FunctionArea.Resources["cities"]).Clear();
+            foreach (string city in BackgroundCore.GetBackgroundCore().CityList)
+                ((Cities)this.stackPanel_FunctionArea.Resources["cities"]).Add(city);
+        }
+
+        private void comboBox_Cities_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BackgroundCore.GetBackgroundCore().RefreshMap(this.comboBox_Cities.Text);
+        }
     }
 
     public class Cities : ObservableCollection<string>
     {
         public Cities()
         {
-            Add("北京");
         }
     }
 
