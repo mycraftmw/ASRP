@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Core;
+using System.Collections.ObjectModel;
 
 namespace AdvancedSubwayRoutePlanning
 {
@@ -15,11 +16,14 @@ namespace AdvancedSubwayRoutePlanning
     public partial class App : Application
     {
         private string[] args;
-        private BackgroundCore backgroundCore;
+        public List<Connection> CurRoute = new List<Connection>();
+        public Station StartStation;
+        public Station EndStation;
+        public ObservableCollection<DisplayRouteUnit> DisplayRouteUnitList = new ObservableCollection<DisplayRouteUnit>();
+        public bool IsShortestPlaning;
 
         public App()
         {
-            backgroundCore = new BackgroundCore();
         }
 
         private void AppStartup(object sender, StartupEventArgs e)
@@ -31,7 +35,5 @@ namespace AdvancedSubwayRoutePlanning
         {
             get { return args; }
         }
-
-
     }
 }

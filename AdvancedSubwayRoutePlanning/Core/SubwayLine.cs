@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class SubwayLine
+    public class SubwayLine
     {
         public string Name { get; }
         public string Color { get; }

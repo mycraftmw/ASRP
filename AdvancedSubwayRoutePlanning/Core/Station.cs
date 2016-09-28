@@ -1,6 +1,8 @@
+using System.Windows;
+
 namespace Core
 {
-    class Station
+    public class Station
     {
         private static int ID = 0;
         public int Id { get; }
@@ -31,6 +33,12 @@ namespace Core
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public Rect GetStationRect()
+        {
+            double r = this.IsTransfer ? 7 : 5;
+            return new Rect(X - r, Y - r, r * 2, r * 2);
         }
     }
 }

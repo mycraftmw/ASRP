@@ -48,6 +48,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -121,8 +122,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Map\" />
-    <Folder Include="Resource\" />
+    <Resource Include="Resources\EndStation.png" />
+    <Resource Include="Resources\MetroApp.ico" />
+    <Resource Include="Resources\StartStation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Map\beijing-subway.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
