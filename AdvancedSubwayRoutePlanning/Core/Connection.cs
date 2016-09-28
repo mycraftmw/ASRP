@@ -1,17 +1,17 @@
 namespace Core
 {
-    public class Connection
+    class Connection
     {
         public Station BeginStation { get; }
         public Station EndStation { get; }
         public string LineName { get; }
-        public int MultiLine { get; }
-        public Connection(Station beginStationName, Station endStationName, string lineName, int multiLine)
+        public int Type { get; }
+        public Connection(Station beginStationName, Station endStationName, string lineName,int type)
         {
             this.BeginStation = beginStationName;
             this.EndStation = endStationName;
             this.LineName = lineName;
-            this.MultiLine = multiLine;
+            this.Type = type;
         }
         public override bool Equals(object obj)
         {

@@ -4,14 +4,12 @@ using System;
 
 namespace Core
 {
-    public class SubwayMap
+    class SubwayMap
     {
         public List<Station> Stations { get; }
         public List<Connection> Connections { get; }
         public List<SubwayLine> SubwayLines { get; }
         private Hashtable map;
-        public Station StartStation = null;
-        public Station EndStation = null;
         public SubwayMap()
         {
             this.Stations = new List<Station>();
@@ -28,7 +26,7 @@ namespace Core
         {
             if (!HasStation(stationName))
             {
-                Station station = new Station(stationName, x, y, isTransfer);
+                Station station = new Station(stationName, x, y,isTransfer);
                 Stations.Add(station);
             }
         }
@@ -36,7 +34,7 @@ namespace Core
         {
             return Connections.Exists(x => x.BeginStation.Name == begin && x.EndStation.Name == end && x.LineName == lineName);
         }
-        public void AddConnection(string begin, string end, string lineName)
+        public void AddConnection(string begin, string end, string lineName, int type)
         {
             if (HasStation(begin) && HasStation(end))
             {
@@ -44,7 +42,7 @@ namespace Core
                 {
                     Station beginStation = Stations.Find(x => x.Name == begin);
                     Station endStation = Stations.Find(x => x.Name == end);
-                    Connection connection = new Connection(beginStation, endStation, lineName, 0);
+                    Connection connection = new Connection(beginStation, endStation, lineName,type);
                     Connections.Add(connection);
                     if (map.Contains(beginStation))
                     {
@@ -64,6 +62,13 @@ namespace Core
             {
                 throw new System.ArgumentException("Invalid Connection!");
             }
+        }
+
+        internal int CountConnection(string c, string d)
+        {
+            Station a = Stations.Find(x=>x.Name==c);
+            Station b = Stations.Find(x=>x.Name==d);
+            return Connections.FindAll(x => x.BeginStation == a && x.EndStation == b).Count;
         }
 
         public void AddSubwayLine(string name, string color)
@@ -120,7 +125,6 @@ namespace Core
             }
             return (List<Connection>)pre[endStation];
         }
-
         public List<Station> GetLine(string lineName)
         {
             List<Station> line = new List<Station>();
@@ -132,11 +136,6 @@ namespace Core
                 }
             });
             return line;
-        }
-
-        public Station GetStation(string stationName)
-        {
-            return Stations.Find(x => x.Name == stationName);
         }
     }
 }
