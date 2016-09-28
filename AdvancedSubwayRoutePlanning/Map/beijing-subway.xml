@@ -179,7 +179,7 @@
 		<p sid="朱辛庄" lb="朱辛庄" x="-183.7" y="-314.1" rx="-48.2" ry="-8.4" st="true" ex="true" iu="true" rc="false" slb="true" ln="北京市|地铁昌平线,北京市|地铁8号线" int="4" />
 		<p sid="育知路" lb="育知路" x="-103.8" y="-314.1" rx="-20" ry="7" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁8号线" int="2" />
 		<p sid="平西府" lb="平西府" x="-52.25" y="-314.1" rx="-20" ry="7" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁8号线" int="2" />
-		<p sid="" lb="" x="-23.6" y="-314.25" rx="" ry="" st="false" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁8号线" int="2" />
+		<p sid="" lb="" x="-23.6" y="-314.25" rx="" ry="" st="false" ex="false" iu="false" rc="false" slb="true" ln="北京市|地铁8号线" int="2" />
 		<p sid="回龙观东大街" lb="回龙观东大街" x="-23.6" y="-293.3" rx="5.9" ry="-7.5" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁8号线" int="2" />
 		<p sid="霍营" lb="霍营" x="-23.6" y="-253.6" rx="5" ry="-23" st="true" ex="true" iu="true" rc="false" slb="true" ln="北京市|地铁8号线,北京市|地铁13号线" int="3" />
 		<p sid="育新" lb="育新" x="-23.6" y="-232.2" rx="5.9" ry="-7.5" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁8号线" int="3" />
@@ -382,7 +382,7 @@
 		<p sid="昌平" lb="昌平" x="-333.7" y="-489.1" rx="-10" ry="10" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁昌平线" />
 		<p sid="" lb="" x="-358.7" y="-489.1" rx="" ry="" st="false" ex="false" iu="false" rc="false" slb="false" ln="北京市|地铁昌平线" />
 		<p sid="十三陵景区" lb="十三陵景区" x="-378.7" y="-499.1" rx="-30.5" ry="-30.4" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁昌平线" />
-		<p sid="" lb="" x="-400.7" y="-509.1" rx="-35.5" ry="-18.4" st="false" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁昌平线" />
+		<p sid="" lb="" x="-400.7" y="-509.1" rx="-35.5" ry="-18.4" st="false" ex="false" iu="false" rc="false" slb="true" ln="北京市|地铁昌平线" />
 		<p sid="昌平西山口" lb="昌平西山口" x="-471.2" y="-509.1" rx="-30.5" ry="10.4" st="true" ex="false" iu="true" rc="false" slb="true" ln="北京市|地铁昌平线" />
 	</l>
 	<l lid="亦庄线" lb="亦庄线" slb="亦庄" n="14" loop="false" lbx="295.0" lby="567.0" lbr="0.0" lc="0xFF3703">
