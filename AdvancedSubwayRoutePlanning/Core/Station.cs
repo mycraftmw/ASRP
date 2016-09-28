@@ -7,12 +7,14 @@ namespace Core
         public string Name { get; }
         public double X { get; }
         public double Y { get; }
-        public Station(string name, double x, double y)
+        public bool IsTransfer { get; }
+        public Station(string name, double x, double y,bool isTransfer)
         {
-            this.Name = name;
             this.Id = ++ID;
+            this.Name = name;
             this.X = x;
             this.Y = y;
+            this.IsTransfer = isTransfer;
         }
         public override bool Equals(object obj)
         {

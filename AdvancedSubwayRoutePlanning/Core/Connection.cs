@@ -5,11 +5,13 @@ namespace Core
         public Station BeginStation { get; }
         public Station EndStation { get; }
         public string LineName { get; }
-        public Connection(Station beginStationName, Station endStationName, string lineName)
+        public int Type { get; }
+        public Connection(Station beginStationName, Station endStationName, string lineName,int type)
         {
             this.BeginStation = beginStationName;
             this.EndStation = endStationName;
             this.LineName = lineName;
+            this.Type = type;
         }
         public override bool Equals(object obj)
         {

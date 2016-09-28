@@ -22,11 +22,11 @@ namespace Core
         {
             return Stations.Exists(x => x.Name == stationName);
         }
-        public void AddStation(string stationName, double x, double y)
+        public void AddStation(string stationName, double x, double y, bool isTransfer)
         {
             if (!HasStation(stationName))
             {
-                Station station = new Station(stationName, x, y);
+                Station station = new Station(stationName, x, y,isTransfer);
                 Stations.Add(station);
             }
         }
@@ -34,7 +34,7 @@ namespace Core
         {
             return Connections.Exists(x => x.BeginStation.Name == begin && x.EndStation.Name == end && x.LineName == lineName);
         }
-        public void AddConnection(string begin, string end, string lineName)
+        public void AddConnection(string begin, string end, string lineName, int type)
         {
             if (HasStation(begin) && HasStation(end))
             {
@@ -42,7 +42,7 @@ namespace Core
                 {
                     Station beginStation = Stations.Find(x => x.Name == begin);
                     Station endStation = Stations.Find(x => x.Name == end);
-                    Connection connection = new Connection(beginStation, endStation, lineName);
+                    Connection connection = new Connection(beginStation, endStation, lineName,type);
                     Connections.Add(connection);
                     if (map.Contains(beginStation))
                     {
@@ -62,6 +62,13 @@ namespace Core
             {
                 throw new System.ArgumentException("Invalid Connection!");
             }
+        }
+
+        internal int CountConnection(string c, string d)
+        {
+            Station a = Stations.Find(x=>x.Name==c);
+            Station b = Stations.Find(x=>x.Name==d);
+            return Connections.FindAll(x => x.BeginStation == a && x.EndStation == b).Count;
         }
 
         public void AddSubwayLine(string name, string color)

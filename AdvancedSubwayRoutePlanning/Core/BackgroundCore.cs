@@ -5,16 +5,22 @@ namespace Core
 {
     class BackgroundCore
     {
-        private Loader Loader = new Loader();
-        public Printer Printer = new Printer(System.Console.OpenStandardOutput());
-        public SubwayMap SubwayMap;
-        private List<Connection> route = null;
-
-        public BackgroundCore()
+        public SubwayMap SubwayMap { get; }
+        public Printer Printer { get; }
+        private Loader loader;
+        private List<Connection> route;
+        private static BackgroundCore backgroundCore;
+        private BackgroundCore()
         {
-            SubwayMap = Loader.LoadFromXMLFile("subway.xml");
+            loader = new Loader();
+            SubwayMap = loader.LoadFromXMLFile("subway.xml");
+            Printer = new Printer(System.Console.OpenStandardOutput());
         }
-
+        public static BackgroundCore GetBackgroundCore()
+        {
+            if (backgroundCore == null) backgroundCore = new BackgroundCore();
+            return backgroundCore;
+        }
         public void SelectFunction(MainWindow mainWindow, string[] args)
         {
             try
