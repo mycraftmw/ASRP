@@ -4,12 +4,14 @@ using System;
 
 namespace Core
 {
-    class SubwayMap
+    public class SubwayMap
     {
         public List<Station> Stations { get; }
         public List<Connection> Connections { get; }
         public List<SubwayLine> SubwayLines { get; }
         private Hashtable map;
+        public Station StartStation = null;
+        public Station EndStation = null;
         public SubwayMap()
         {
             this.Stations = new List<Station>();
@@ -22,11 +24,11 @@ namespace Core
         {
             return Stations.Exists(x => x.Name == stationName);
         }
-        public void AddStation(string stationName, double x, double y)
+        public void AddStation(string stationName, double x, double y, bool isTransfer)
         {
             if (!HasStation(stationName))
             {
-                Station station = new Station(stationName, x, y);
+                Station station = new Station(stationName, x, y, isTransfer);
                 Stations.Add(station);
             }
         }
@@ -42,7 +44,7 @@ namespace Core
                 {
                     Station beginStation = Stations.Find(x => x.Name == begin);
                     Station endStation = Stations.Find(x => x.Name == end);
-                    Connection connection = new Connection(beginStation, endStation, lineName);
+                    Connection connection = new Connection(beginStation, endStation, lineName, 0);
                     Connections.Add(connection);
                     if (map.Contains(beginStation))
                     {
@@ -118,6 +120,7 @@ namespace Core
             }
             return (List<Connection>)pre[endStation];
         }
+
         public List<Station> GetLine(string lineName)
         {
             List<Station> line = new List<Station>();
@@ -129,6 +132,11 @@ namespace Core
                 }
             });
             return line;
+        }
+
+        public Station GetStation(string stationName)
+        {
+            return Stations.Find(x => x.Name == stationName);
         }
     }
 }

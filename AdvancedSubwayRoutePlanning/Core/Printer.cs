@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 namespace Core
 {
-    class Printer
+    public class Printer
     {
         private StreamWriter output;
         public Printer(Stream os)

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using AdvancedSubwayRoutePlanning;
 namespace Core
 {
-    class BackgroundCore
+    public class BackgroundCore
     {
         private Loader Loader = new Loader();
         public Printer Printer = new Printer(System.Console.OpenStandardOutput());
-        public SubwayMap SubwayMap;
+        public SubwayMap SubwayMap { get; }
         private List<Connection> route = null;
 
         public BackgroundCore()

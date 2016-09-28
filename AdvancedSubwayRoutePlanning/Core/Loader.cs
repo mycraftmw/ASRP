@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace Core
 {
-    class Loader
+    public class Loader
     {
         public SubwayMap SubwayMap { get; private set; }
         public Loader()
@@ -35,7 +35,7 @@ namespace Core
                 foreach (XmlNode sta in stations)
                 {
                     XmlAttributeCollection aa = sta.Attributes;
-                    SubwayMap.AddStation(aa.GetNamedItem("name").InnerXml, Convert.ToDouble(aa.GetNamedItem("x").InnerXml), Convert.ToDouble(aa.GetNamedItem("y").InnerXml));
+                    SubwayMap.AddStation(aa.GetNamedItem("name").InnerXml, Convert.ToDouble(aa.GetNamedItem("x").InnerXml), Convert.ToDouble(aa.GetNamedItem("y").InnerXml), false);
                 }
                 XmlNodeList connections = eachline.SelectSingleNode("connections").ChildNodes;
                 foreach (XmlNode con in connections)

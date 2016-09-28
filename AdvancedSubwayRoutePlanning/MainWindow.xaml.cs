@@ -23,11 +23,31 @@ namespace AdvancedSubwayRoutePlanning
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<DisplayRouteUnit> displayRouteUnitList = new ObservableCollection<DisplayRouteUnit>();
+        private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
+        private ObservableCollection<string> displayStationsName = new ObservableCollection<string>();
+        private SubwayMap subwayMap;
+        private List<Connection> curRoute;
+        private Station startStation;
+        private Station endStation;
 
         public MainWindow()
         {
             InitializeComponent();
+            this.displayRouteUnitList = ((App)App.Current).DisplayRouteUnitList;
+            this.listView_Route.ItemsSource = displayRouteUnitList;
+            this.comboBox_StartStation.ItemsSource = displayStationsName;
+            this.comboBox_EndStation.ItemsSource = displayStationsName;
+            this.subwayMap = ((App)App.Current).BackgroundCore.SubwayMap;
+            this.curRoute = ((App)App.Current).CurRoute;
+            this.startStation = ((App)App.Current).StartStation;
+            this.endStation = ((App)App.Current).EndStation;
+            ((App)App.Current).IsShortestPlaning = (bool)radioButton_Shortest.IsChecked;
+
+            ((App)App.Current).BackgroundCore.SelectFunction(this, ((App)App.Current).Args);
+            foreach (Station station in subwayMap.Stations)
+            {
+                displayStationsName.Add(station.Name);
+            }
         }
 
         private void searchRoute(object sender, RoutedEventArgs e)
@@ -38,18 +58,40 @@ namespace AdvancedSubwayRoutePlanning
                 mode = "-b";
             else
                 mode = "-c";
-            
-            List<Connection> route = BackgroundCore.SubwayMap.GetDirections(comboBox_StartStation.Text, comboBox_EndStation.Text, mode);
+
+            startStation = subwayMap.GetStation(comboBox_StartStation.Text);
+            endStation = subwayMap.GetStation(comboBox_EndStation.Text);
+            curRoute = subwayMap.GetDirections(startStation.Name, endStation.Name, mode);
 
             displayRouteUnitList.Clear();
 
-            displayRouteUnitList.Add(new DisplayRouteUnit(route[0].BeginStation.Name, route[0].LineName));
-            foreach (Connection connection in route)
+            displayRouteUnitList.Add(new DisplayRouteUnit(curRoute[0].BeginStation.Name, curRoute[0].LineName));
+            foreach (Connection connection in curRoute)
             {
                 displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
             }
 
-            listView_Route.ItemsSource = displayRouteUnitList;
+            subwayGraph.InvalidateVisual();
+        }
+
+        private void comboBox_StartStation_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            this.comboBox_StartStation.IsDropDownOpen = true;
+        }
+
+        private void comboBox_EndStation_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            this.comboBox_EndStation.IsDropDownOpen = true;
+        }
+
+        private void comboBox_StartStation_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.comboBox_StartStation.IsDropDownOpen = true;
+        }
+
+        private void comboBox_EndStation_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.comboBox_EndStation.IsDropDownOpen = true;
         }
     }
 
