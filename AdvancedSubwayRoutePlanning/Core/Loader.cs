@@ -30,7 +30,7 @@ namespace Core
             foreach (XmlNode eachline in lines)
             {
                 string lineName = eachline.Attributes.GetNamedItem("lid").InnerXml;
-                string lineColor = eachline.Attributes.GetNamedItem("lc").InnerXml;
+                string lineColor = eachline.Attributes.GetNamedItem("lc").InnerXml.Remove(0,2);
                 SubwayMap.AddSubwayLine(lineName, lineColor);
                 XmlNodeList stations = eachline.SelectSingleNode("stations").ChildNodes;
                 string lastName = "";
