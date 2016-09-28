@@ -1,6 +1,6 @@
 namespace Core
 {
-    class Connection
+    public class Connection
     {
         public Station BeginStation { get; }
         public Station EndStation { get; }

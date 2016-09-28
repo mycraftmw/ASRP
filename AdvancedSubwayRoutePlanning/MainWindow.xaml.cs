@@ -37,13 +37,13 @@ namespace AdvancedSubwayRoutePlanning
             this.listView_Route.ItemsSource = displayRouteUnitList;
             this.comboBox_StartStation.ItemsSource = displayStationsName;
             this.comboBox_EndStation.ItemsSource = displayStationsName;
-            this.subwayMap = ((App)App.Current).BackgroundCore.SubwayMap;
+            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
             this.curRoute = ((App)App.Current).CurRoute;
             this.startStation = ((App)App.Current).StartStation;
             this.endStation = ((App)App.Current).EndStation;
             ((App)App.Current).IsShortestPlaning = (bool)radioButton_Shortest.IsChecked;
 
-            ((App)App.Current).BackgroundCore.SelectFunction(this, ((App)App.Current).Args);
+            BackgroundCore.GetBackgroundCore().SelectFunction(this, ((App)App.Current).Args);
             foreach (Station station in subwayMap.Stations)
             {
                 displayStationsName.Add(station.Name);

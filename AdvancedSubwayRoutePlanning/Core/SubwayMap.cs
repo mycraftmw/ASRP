@@ -9,6 +9,8 @@ namespace Core
         public List<Station> Stations { get; }
         public List<Connection> Connections { get; }
         public List<SubwayLine> SubwayLines { get; }
+        public Station StartStation;
+        public Station EndStation;
         private Hashtable map;
         public SubwayMap()
         {
@@ -136,6 +138,11 @@ namespace Core
                 }
             });
             return line;
+        }
+
+        public Station GetStation(string stationName)
+        {
+            return Stations.Find((Station station) => station.Name == stationName);
         }
     }
 }

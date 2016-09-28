@@ -16,7 +16,6 @@ namespace AdvancedSubwayRoutePlanning
     public partial class App : Application
     {
         private string[] args;
-        public BackgroundCore BackgroundCore { get; }
         public List<Connection> CurRoute = new List<Connection>();
         public Station StartStation;
         public Station EndStation;
@@ -25,7 +24,6 @@ namespace AdvancedSubwayRoutePlanning
 
         public App()
         {
-            BackgroundCore = new BackgroundCore();
         }
 
         private void AppStartup(object sender, StartupEventArgs e)

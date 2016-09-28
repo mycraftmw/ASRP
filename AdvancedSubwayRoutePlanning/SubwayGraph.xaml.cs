@@ -42,7 +42,7 @@ namespace AdvancedSubwayRoutePlanning
         public SubwayGraph()
         {
             InitializeComponent();
-            this.subwayMap = ((App)App.Current).BackgroundCore.SubwayMap;
+            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
             this.curRoute = ((App)App.Current).CurRoute;
             this.startStation = ((App)App.Current).StartStation;
             this.endStation = ((App)App.Current).EndStation;
@@ -130,7 +130,7 @@ namespace AdvancedSubwayRoutePlanning
         private void drawSubwayGraph(DrawingContext dc)
         {
             //绘制地铁路径
-            /*foreach (Connection connection in subwayMap.Connections)
+            foreach (Connection connection in subwayMap.Connections)
             {
                 drawConnection(dc, connection);
             }
@@ -139,11 +139,7 @@ namespace AdvancedSubwayRoutePlanning
             foreach (Station station in subwayMap.Stations)
             {
                 drawStation(dc, station);
-            }*/
-            drawConnection(dc, new Connection(new Station("s1", 200, 200, true), new Station("s2", 250, 250, true), "十号线", 0));
-
-            drawStation(dc, new Station("s1", 200, 200, true));
-            drawStation(dc, new Station("s2", 250, 250, true));
+            }
         }
 
         private void drawConnection(DrawingContext dc, Connection connection)
@@ -154,15 +150,15 @@ namespace AdvancedSubwayRoutePlanning
             Pen pen = new Pen(new SolidColorBrush((hexToColor(((SubwayLine)subwayMap.SubwayLines.Find((SubwayLine line) => line.Name == connection.LineName)).Color))), 5);
             pen.LineJoin = PenLineJoin.Round;
 
-            if (connection.MultiLine == 0)
+            if (connection.Type == 0)
                 dc.DrawLine(pen, pt1, pt2);
-            //双线并轨，MultiLine = 1 或 2 为不同方向的平移
-            else if (connection.MultiLine > 0)
+            //双线并轨，Type = 1 或 2 为不同方向的平移
+            else if (connection.Type > 0)
             {
                 double scale = (pen.Thickness / 2) / Distance(pt1, pt2);
 
                 double angle = (double)(Math.PI / 2);
-                if (connection.MultiLine == 2)
+                if (connection.Type == 2)
                     angle *= -1;
 
                 //平移线段
@@ -219,13 +215,13 @@ namespace AdvancedSubwayRoutePlanning
             foreach (Connection connection in this.curRoute)
             {
                 //绘制路径
-                if (connection.MultiLine >= 0)
+                if (connection.Type >= 0)
                 {
                     drawConnection(dc, connection);
                 }
                 {
                     //如果是隐藏的路径，则取反向的可见路径
-                    Connection visibleConnection = subwayMap.Connections.Find((Connection curConnection) => curConnection.MultiLine > 0 && curConnection.BeginStation.Name.Equals(connection.EndStation.Name) && curConnection.EndStation.Name.Equals(connection.BeginStation.Name));
+                    Connection visibleConnection = subwayMap.Connections.Find((Connection curConnection) => curConnection.Type > 0 && curConnection.BeginStation.Name.Equals(connection.EndStation.Name) && curConnection.EndStation.Name.Equals(connection.BeginStation.Name));
                     if (visibleConnection != null)
                         drawConnection(dc, visibleConnection);
                 }
