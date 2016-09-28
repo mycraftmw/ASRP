@@ -221,7 +221,7 @@ namespace AdvancedSubwayRoutePlanning
                 else
                 {
                     //如果是隐藏的路径，则取反向的可见路径
-                    Connection visibleConnection = subwayMap.Connections.Find((Connection curConnection) => curConnection.Type > 0 && curConnection.BeginStation.Name.Equals(connection.EndStation.Name) && curConnection.EndStation.Name.Equals(connection.BeginStation.Name));
+                    Connection visibleConnection = subwayMap.Connections.Find((Connection curConnection) => curConnection.Type >= 0 && curConnection.BeginStation.Name.Equals(connection.EndStation.Name) && curConnection.EndStation.Name.Equals(connection.BeginStation.Name));
                     if (visibleConnection != null)
                         drawConnection(dc, visibleConnection);
                 }
