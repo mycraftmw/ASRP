@@ -15,7 +15,7 @@ namespace Core
         private BackgroundCore()
         {
             loader = new Loader();
-            SubwayMap = loader.LoadFromXMLFile(@"map\beijing-subway.xml");
+            SubwayMap = loader.LoadFromXMLFile(@"beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
         public static BackgroundCore GetBackgroundCore()
@@ -37,7 +37,7 @@ namespace Core
         }
         public void SelectFunction(MainWindow mainWindow, string[] args)
         {
-            try
+            //try
             {
                 mainWindow.Hide();
 
@@ -71,12 +71,12 @@ namespace Core
                 }
 
             }
-            catch (System.Exception e)
+            /*catch (System.Exception e)
             {
                 Console.WriteLine(e);
                 mainWindow.Close();
                 return;
-            }
+            }*/
         }
     }
 }

@@ -90,7 +90,6 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawFrame(DrawingContext dc)
         {
-            Console.WriteLine(this.ActualWidth);
             RectangleGeometry rect1 = new RectangleGeometry(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
             RectangleGeometry rect2 = new RectangleGeometry(new Rect(0, 0, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight));
 
@@ -208,7 +207,7 @@ namespace AdvancedSubwayRoutePlanning
                 return;
 
             //绘制白色遮罩层
-            Rect rc = new Rect(0, 0, this.ActualWidth, this.ActualHeight);
+            Rect rc = new Rect(-scrollX, -scrollY, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight);
             dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(200, 245, 245, 245)), new Pen(Brushes.Black, 0), rc);
 
             //绘制当前乘车路线
@@ -219,6 +218,7 @@ namespace AdvancedSubwayRoutePlanning
                 {
                     drawConnection(dc, connection);
                 }
+                else
                 {
                     //如果是隐藏的路径，则取反向的可见路径
                     Connection visibleConnection = subwayMap.Connections.Find((Connection curConnection) => curConnection.Type > 0 && curConnection.BeginStation.Name.Equals(connection.EndStation.Name) && curConnection.EndStation.Name.Equals(connection.BeginStation.Name));
