@@ -9,10 +9,10 @@ namespace Core
         public SubwayMap SubwayMap { get; private set; }
         public Loader()
         {
-            SubwayMap = new SubwayMap();
         }
         public SubwayMap LoadFromXMLFile(string path)
         {
+            SubwayMap = new SubwayMap();
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException("文件不存在！");
@@ -30,7 +30,8 @@ namespace Core
             {
                 string lineName = eachline.Attributes.GetNamedItem("lid").InnerXml;
                 string lineColor = eachline.Attributes.GetNamedItem("lc").InnerXml.Remove(0,2);
-                SubwayMap.AddSubwayLine(lineName, lineColor);
+                SubwayMap.AddSubwayLine(lineName, "#" + lineColor);
+                Console.WriteLine(lineName);
                 XmlNodeList stations = eachline.ChildNodes;
                 string lastName = "";
                 foreach (XmlNode sta in stations)

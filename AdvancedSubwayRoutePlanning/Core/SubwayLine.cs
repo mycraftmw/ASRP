@@ -12,7 +12,7 @@ namespace Core
         public string Color { get; }
         public SubwayLine(string name, string color)
         {
-            this.Name = Name;
+            this.Name = name;
             this.Color = color;
         }
     }
