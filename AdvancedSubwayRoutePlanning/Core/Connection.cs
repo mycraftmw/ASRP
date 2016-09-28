@@ -5,13 +5,22 @@ namespace Core
         public Station BeginStation { get; }
         public Station EndStation { get; }
         public string LineName { get; }
-        public int Type { get; }
-        public Connection(Station beginStationName, Station endStationName, string lineName,int type)
+        private int type;
+        public int Type
+        {
+            get { return type; }
+            set
+            {
+                if (-1 <= value && value <= 2)
+                    type = value;
+            }
+        }
+        public Connection(Station beginStationName, Station endStationName, string lineName, int type)
         {
             this.BeginStation = beginStationName;
             this.EndStation = endStationName;
             this.LineName = lineName;
-            this.Type = type;
+            this.type = type;
         }
         public override bool Equals(object obj)
         {

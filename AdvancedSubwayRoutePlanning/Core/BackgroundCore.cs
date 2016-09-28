@@ -9,21 +9,15 @@ namespace Core
     {
         public SubwayMap SubwayMap { get; private set; }
         public Printer Printer { get; }
+        public List<string> CityList;
         private Loader loader;
         private List<Connection> route;
         private static BackgroundCore backgroundCore;
         private BackgroundCore()
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(@"map\subway-list.xml");
-            XmlNodeList cities = doc.DocumentElement.ChildNodes;
-            SubwayMap = null;
-            foreach (string name in ((MainWindow)((App)App.Current).MainWindow).stackPanel_FunctionArea.Resources.Values)
-                Console.WriteLine(name);
-            foreach (XmlNode city in cities)
-                ((Cities)((MainWindow)((App)App.Current).MainWindow).stackPanel_FunctionArea.Resources.Values).Add(city.Attributes.GetNamedItem("name").InnerXml);
             loader = new Loader();
-            RefreshMap(((Cities)((MainWindow)((App)App.Current).MainWindow).stackPanel_FunctionArea.Resources[0])[0]);
+            CityList = loader.LoadCityList(@"map/subway-list.xml");
+            SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
         public static BackgroundCore GetBackgroundCore()
@@ -33,7 +27,13 @@ namespace Core
         }
         public void RefreshMap(string CityName)
         {
-            SubwayMap = loader.LoadFromXMLFile(CityName);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(@"map\subway-list.xml");
+            XmlNodeList cities = doc.DocumentElement.ChildNodes;
+            SubwayMap = null;
+            foreach (XmlNode city in cities)
+                if (city.Attributes.GetNamedItem("name").InnerXml == CityName)
+                    SubwayMap = loader.LoadSubwayMap(city.Attributes.GetNamedItem("src").InnerXml);
             if (SubwayMap == null)
                 throw new ArgumentException("The City does not exist!");
         }
@@ -66,10 +66,14 @@ namespace Core
                 {
                     route = SubwayMap.GetDirections(args[1], args[2], args[0]);
                     Printer.PrintDirections(route);
+                    mainWindow.Close();
+                    return;
                 }
                 else
                 {
                     Printer.WriteLine("输入格式错误");
+                    mainWindow.Close();
+                    return;
                 }
 
             }

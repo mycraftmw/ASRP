@@ -9,10 +9,9 @@ namespace Core
         public List<Station> Stations { get; }
         public List<Connection> Connections { get; }
         public List<SubwayLine> SubwayLines { get; }
+        private Hashtable map;
         public Station StartStation;
         public Station EndStation;
-        public List<Connection> CurRoute;
-        private Hashtable map;
         public SubwayMap()
         {
             this.Stations = new List<Station>();
@@ -58,7 +57,6 @@ namespace Core
                         cons.Add(connection);
                         map.Add(beginStation, cons);
                     }
-
                 }
             }
             else
@@ -81,52 +79,109 @@ namespace Core
 
         public List<Connection> GetDirections(string beginStationName, string endStationName, string mode)
         {
-            int TRANSFERCOST =
+            if (!HasStation(beginStationName) || !HasStation(endStationName)) throw new ArgumentException("站点不存在！");
+            int transferCost =
             mode == "-b" ? 0 :
             mode == "-c" ? 10000 :
             -1;
-            if (TRANSFERCOST < 0)
-            {
-                throw new AggregateException("模式错误！");
-            }
-            if (!HasStation(beginStationName) || !HasStation(endStationName))
-            {
-                throw new ArgumentException("站点不存在！");
-            }
+            if (transferCost < 0) throw new AggregateException("模式错误");
+
+            if (beginStationName == endStationName) return new List<Connection>();
+
             Station beginStation = Stations.Find(x => x.Name == beginStationName);
             Station endStation = Stations.Find(x => x.Name == endStationName);
-            if (beginStation.Equals(endStation))
-            {
-                return new List<Connection>();
-            }
-
             Queue<Station> queue = new Queue<Station>();
-            Hashtable dis = new Hashtable();
-            Hashtable pre = new Hashtable();
-            Stations.ForEach(x => dis.Add(x, int.MaxValue));
-            dis[beginStation] = 1;
-            pre.Add(beginStation, new List<Connection>());
+            Hashtable routeMap = new Hashtable();
+            List<List<Connection>> initRouteList = new List<List<Connection>>();
+            List<Connection> initRoute = new List<Connection>();
+            Connection initConnection = new Connection(Stations.Find(x => x.Id == 0), Stations.Find(x => x.Id == 0), "*",-1);
+            initRoute.Add(initConnection);
+            initRouteList.Add(initRoute);
+            routeMap.Add(beginStation, initRouteList);
             queue.Enqueue(beginStation);
+            List<List<Connection>> tRouteList = null;
+            List<Connection> tRoute = null;
             while (queue.Count != 0)
             {
                 Station now = queue.Dequeue();
-                Connection comeConnection = ((List<Connection>)pre[now]).FindLast(x => true);
-                ((List<Connection>)map[now]).ForEach(x =>
+                List<List<Connection>> routeList = (List<List<Connection>>)routeMap[now];
+                ((List<Connection>)map[now]).ForEach(line =>
                 {
-                    int cost = 1 + (!now.Equals(beginStation) && comeConnection.LineName != x.LineName ? TRANSFERCOST : 0);
-                    if ((int)dis[x.EndStation] > (int)dis[now] + cost)
+                    routeList.ForEach(route =>
                     {
-                        dis[x.EndStation] = (int)dis[now] + cost;
-                        pre[x.EndStation] = new List<Connection>((List<Connection>)pre[now]);
-                        ((List<Connection>)pre[x.EndStation]).Add(x);
-                        if (!queue.Contains(x.EndStation))
+                        if (!routeMap.Contains(line.EndStation)) routeMap.Add(line.EndStation, new List<List<Connection>>());
+                        tRouteList = (List<List<Connection>>)routeMap[line.EndStation];
+                        int alreadyCost = CountCost(mode, tRouteList.Find(x => true));
+                        int nowCost = CountCost(mode, route) + (mode == "-b" ? 1 : mode == "-c" && route.Count != 1 && route.FindLast(x => true).LineName != line.LineName ? 1 : 0);
+                        if (nowCost < alreadyCost)
                         {
-                            queue.Enqueue(x.EndStation);
+                            tRouteList = new List<List<Connection>>();
+                            tRoute = new List<Connection>(route);
+                            tRoute.Add(line);
+                            tRouteList.Add(tRoute);
+                            routeMap[line.EndStation] = tRouteList;
+                            if (!queue.Contains(line.EndStation)) queue.Enqueue(line.EndStation);
                         }
-                    }
+                        else if (nowCost == alreadyCost)
+                        {
+                            tRoute = new List<Connection>(route);
+                            tRoute.Add(line);
+                            if (CanBetter(tRouteList, tRoute, mode))
+                            {
+                                tRouteList.Add(tRoute);
+                                if (!queue.Contains(line.EndStation)) queue.Enqueue(line.EndStation);
+                            }
+                        }
+                    });
                 });
             }
-            return (List<Connection>)pre[endStation];
+
+            if (!routeMap.Contains(endStation)) throw new ArgumentException("站点不连通");
+
+            tRouteList = (List<List<Connection>>)routeMap[endStation];
+            tRoute = tRouteList[0];
+            tRouteList.ForEach(x =>
+            {
+                if (tRoute.Count > x.Count) tRoute = x;
+                else if (tRoute.Count == x.Count) tRoute = CountCost("-c", tRoute) > CountCost("-c", x) ? x : tRoute;
+            });
+            tRoute.RemoveAt(0);
+            return tRoute;
+        }
+
+        private bool CanBetter(List<List<Connection>> tRouteList, List<Connection> tRoute, string mode)
+        {
+            if (mode == "-b")
+            {
+                int k =  CountCost("-c", tRoute);
+                return !tRouteList.Exists(x => CountCost("-c", x) < k);
+            }
+            else if (mode == "-c")
+            {
+                int k =  CountCost("-b", tRoute);
+                return !tRouteList.Exists(x => x.FindLast(y => true).LineName == tRoute.FindLast(y => true).LineName);
+            }
+            return false;
+        }
+
+        private int CountCost(string mode, List<Connection> list)
+        {
+            if (list == null || list.Count == 0) return int.MaxValue;
+            if (mode == "-b")
+            {
+                return list.Count;
+            }
+            else if (mode == "-c")
+            {
+                if (list.Count <= 2) return 0;
+                int a = 0;
+                string last = "*";
+                list.ForEach(x => { if (x.LineName != last) { a++; last = x.LineName; } });
+                return a;
+            }
+            else
+                return -1;
+            throw new NotImplementedException();
         }
         public List<Station> GetLine(string lineName)
         {
@@ -143,7 +198,7 @@ namespace Core
 
         public Station GetStation(string stationName)
         {
-            return Stations.Find((Station station) => station.Name == stationName);
+            return Stations.Find(x => x.Name == stationName);
         }
     }
 }
