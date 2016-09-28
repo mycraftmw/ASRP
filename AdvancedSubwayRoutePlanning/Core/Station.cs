@@ -1,4 +1,5 @@
 using System.Windows;
+using System.ComponentModel;
 
 namespace Core
 {
@@ -10,6 +11,7 @@ namespace Core
         public double X { get; }
         public double Y { get; }
         public bool IsTransfer { get; }
+
         public Station(string name, double x, double y,bool isTransfer)
         {
             this.Id = ++ID;
@@ -38,7 +40,9 @@ namespace Core
         public Rect GetStationRect()
         {
             double r = this.IsTransfer ? 7 : 5;
-            return new Rect(X - r, Y - r, r * 2, r * 2);
+            return new Rect(X - r - 1, Y - r - 1, r * 2 + 1, r * 2 + 1);
         }
+
+
     }
 }

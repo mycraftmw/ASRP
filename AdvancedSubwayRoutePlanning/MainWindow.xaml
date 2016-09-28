@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvancedSubwayRoutePlanning"
         mc:Ignorable="d"
-        Title="地铁线路规划软件" Height="500" Width="800">
+        Title="地铁线路规划软件" Height="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenHeightKey}}" Width="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenWidthKey}}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

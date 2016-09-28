@@ -28,9 +28,6 @@ namespace AdvancedSubwayRoutePlanning
         private double scrollX = 0;
         private double scrollY = 0;
         private double zoomScale = 1;
-        public Station startStation;
-        public Station endStation;
-        private List<Connection> curRoute;
         private Point mouseDownPoint;
         private Point mouseLastPoint;
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
@@ -43,9 +40,6 @@ namespace AdvancedSubwayRoutePlanning
         {
             InitializeComponent();
             this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
-            this.curRoute = ((App)App.Current).CurRoute;
-            this.startStation = ((App)App.Current).StartStation;
-            this.endStation = ((App)App.Current).EndStation;
             this.displayRouteUnitList = ((App)App.Current).DisplayRouteUnitList;
         }
 
@@ -90,8 +84,8 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawFrame(DrawingContext dc)
         {
-            RectangleGeometry rect1 = new RectangleGeometry(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            RectangleGeometry rect2 = new RectangleGeometry(new Rect(0, 0, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight));
+            RectangleGeometry rect1 = new RectangleGeometry(new Rect(-scrollX, -scrollY, this.ActualWidth, this.ActualHeight));
+            RectangleGeometry rect2 = new RectangleGeometry(new Rect(-scrollX, -scrollY, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight));
 
             GeometryGroup group = new GeometryGroup();
             group.FillRule = FillRule.EvenOdd;
@@ -108,7 +102,7 @@ namespace AdvancedSubwayRoutePlanning
             dc.Pop();
 
             //遮罩层
-            Rect rc = new Rect(5, 5, 140, (subwayMap.SubwayLines.Count + 1) * 15);
+            Rect rc = new Rect(5, 5, 250, (subwayMap.SubwayLines.Count + 1) * 15);
             dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(180, 245, 245, 245)), new Pen(Brushes.Black, 0.5), rc);
 
             //线路列表
@@ -154,7 +148,7 @@ namespace AdvancedSubwayRoutePlanning
             //双线并轨，Type = 1 或 2 为不同方向的平移
             else if (connection.Type > 0)
             {
-                double scale = (pen.Thickness / 2) / Distance(pt1, pt2);
+                double scale = (2 * pen.Thickness) / Distance(pt1, pt2);
 
                 double angle = (double)(Math.PI / 2);
                 if (connection.Type == 2)
@@ -203,7 +197,7 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawCurRoute(DrawingContext dc)
         {
-            if (this.curRoute == null || this.curRoute.Count == 0)
+            if (subwayMap.CurRoute == null || subwayMap.CurRoute.Count == 0)
                 return;
 
             //绘制白色遮罩层
@@ -211,7 +205,7 @@ namespace AdvancedSubwayRoutePlanning
             dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(200, 245, 245, 245)), new Pen(Brushes.Black, 0), rc);
 
             //绘制当前乘车路线
-            foreach (Connection connection in this.curRoute)
+            foreach (Connection connection in subwayMap.CurRoute)
             {
                 //绘制路径
                 if (connection.Type >= 0)
@@ -300,7 +294,7 @@ namespace AdvancedSubwayRoutePlanning
 
         private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            mouseDownPoint = e.MouseDevice.GetPosition(this);
+            mouseDownPoint = e.GetPosition(this);
             mouseLastPoint = mouseDownPoint;
         }
 
@@ -310,13 +304,15 @@ namespace AdvancedSubwayRoutePlanning
 
             if (station != null)
             {
-                if (startStation == null)
+                if (subwayMap.StartStation == null)
                 {
-                    startStation = station;
+                    subwayMap.StartStation = station;
+                    ((MainWindow)((App)App.Current).MainWindow).comboBox_StartStation.Text = station.Name;
                 }
                 else
                 {
-                    endStation = station;
+                    subwayMap.EndStation = station;
+                    ((MainWindow)((App)App.Current).MainWindow).comboBox_EndStation.Text = station.Name;
 
                     //查找乘车线路
                     Cursor = Cursors.Wait;
@@ -329,33 +325,36 @@ namespace AdvancedSubwayRoutePlanning
                         else
                             mode = "-c";
 
-                        curRoute = subwayMap.GetDirections(startStation.Name, endStation.Name, mode);
+                        subwayMap.CurRoute = subwayMap.GetDirections(subwayMap.StartStation.Name, subwayMap.EndStation.Name, mode);
 
-                        if (curRoute == null || curRoute.Count == 0)
-                            throw new Exception();
+                        if ((subwayMap.CurRoute == null || subwayMap.CurRoute.Count == 0))
+                            return;
 
                         displayRouteUnitList.Clear();
 
-                        displayRouteUnitList.Add(new DisplayRouteUnit(curRoute[0].BeginStation.Name, curRoute[0].LineName));
-                        foreach (Connection connection in curRoute)
+                        displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
+                        foreach (Connection connection in subwayMap.CurRoute)
                         {
                             displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
                         }
 
                         InvalidateVisual();
                     }
-                    catch (Exception ex) {  }
                     finally
                     {
                         Cursor = Cursors.AppStarting;
                     }
                 }
             }
-            else if (Distance(e.MouseDevice.GetPosition(this), mouseLastPoint) < 3)//是否发生拖拽
+            else if (Distance(e.MouseDevice.GetPosition(this), mouseDownPoint) < 1)//是否发生拖拽
             {
-                startStation = null;
-                endStation = null;
-                curRoute.Clear();
+                subwayMap.StartStation = null;
+                subwayMap.EndStation = null;
+                ((MainWindow)((App)App.Current).MainWindow).comboBox_StartStation.Text = "";
+                ((MainWindow)((App)App.Current).MainWindow).comboBox_EndStation.Text = "";
+                if (subwayMap.CurRoute != null)
+                    subwayMap.CurRoute.Clear();
+                displayRouteUnitList.Clear();
             }
 
             InvalidateVisual();
@@ -365,9 +364,9 @@ namespace AdvancedSubwayRoutePlanning
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                scrollX += (e.MouseDevice.GetPosition(this).X - mouseLastPoint.X);
-                scrollY += (e.MouseDevice.GetPosition(this).Y - mouseLastPoint.Y);
-                mouseLastPoint = e.MouseDevice.GetPosition(this);
+                scrollX += (e.GetPosition(this).X - mouseLastPoint.X);
+                scrollY += (e.GetPosition(this).Y - mouseLastPoint.Y);
+                mouseLastPoint = e.GetPosition(this);
 
                 InvalidateVisual();
             }

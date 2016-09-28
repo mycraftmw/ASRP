@@ -11,6 +11,7 @@ namespace Core
         public List<SubwayLine> SubwayLines { get; }
         public Station StartStation;
         public Station EndStation;
+        public List<Connection> CurRoute;
         private Hashtable map;
         public SubwayMap()
         {

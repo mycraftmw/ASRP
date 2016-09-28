@@ -14,8 +14,16 @@ namespace Core
         private static BackgroundCore backgroundCore;
         private BackgroundCore()
         {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(@"map\subway-list.xml");
+            XmlNodeList cities = doc.DocumentElement.ChildNodes;
+            SubwayMap = null;
+            foreach (string name in ((MainWindow)((App)App.Current).MainWindow).stackPanel_FunctionArea.Resources.Values)
+                Console.WriteLine(name);
+            foreach (XmlNode city in cities)
+                ((Cities)((MainWindow)((App)App.Current).MainWindow).stackPanel_FunctionArea.Resources.Values).Add(city.Attributes.GetNamedItem("name").InnerXml);
             loader = new Loader();
-            SubwayMap = loader.LoadFromXMLFile(@"map/beijing-subway.xml");
+            RefreshMap(((Cities)((MainWindow)((App)App.Current).MainWindow).stackPanel_FunctionArea.Resources[0])[0]);
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
         public static BackgroundCore GetBackgroundCore()
@@ -25,13 +33,7 @@ namespace Core
         }
         public void RefreshMap(string CityName)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(@"map\subway-list.xml");
-            XmlNodeList cities = doc.DocumentElement.ChildNodes;
-            SubwayMap = null;
-            foreach (XmlNode city in cities)
-                if (city.Attributes.GetNamedItem("name").InnerXml == CityName)
-                    SubwayMap = loader.LoadFromXMLFile(city.Attributes.GetNamedItem("src").InnerXml);
+            SubwayMap = loader.LoadFromXMLFile(CityName);
             if (SubwayMap == null)
                 throw new ArgumentException("The City does not exist!");
         }

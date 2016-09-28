@@ -26,21 +26,15 @@ namespace AdvancedSubwayRoutePlanning
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
         private ObservableCollection<string> displayStationsName = new ObservableCollection<string>();
         private SubwayMap subwayMap;
-        private List<Connection> curRoute;
-        private Station startStation;
-        private Station endStation;
 
         public MainWindow()
         {
             InitializeComponent();
+            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
             this.displayRouteUnitList = ((App)App.Current).DisplayRouteUnitList;
             this.listView_Route.ItemsSource = displayRouteUnitList;
             this.comboBox_StartStation.ItemsSource = displayStationsName;
             this.comboBox_EndStation.ItemsSource = displayStationsName;
-            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
-            this.curRoute = ((App)App.Current).CurRoute;
-            this.startStation = ((App)App.Current).StartStation;
-            this.endStation = ((App)App.Current).EndStation;
             ((App)App.Current).IsShortestPlaning = (bool)radioButton_Shortest.IsChecked;
 
             BackgroundCore.GetBackgroundCore().SelectFunction(this, ((App)App.Current).Args);
@@ -59,14 +53,14 @@ namespace AdvancedSubwayRoutePlanning
             else
                 mode = "-c";
 
-            startStation = subwayMap.GetStation(comboBox_StartStation.Text);
-            endStation = subwayMap.GetStation(comboBox_EndStation.Text);
-            curRoute = subwayMap.GetDirections(startStation.Name, endStation.Name, mode);
+            subwayMap.StartStation = subwayMap.GetStation(comboBox_StartStation.Text);
+            subwayMap.EndStation = subwayMap.GetStation(comboBox_EndStation.Text);
+            subwayMap.CurRoute = subwayMap.GetDirections(comboBox_StartStation.Text, comboBox_EndStation.Text, mode);
 
             displayRouteUnitList.Clear();
 
-            displayRouteUnitList.Add(new DisplayRouteUnit(curRoute[0].BeginStation.Name, curRoute[0].LineName));
-            foreach (Connection connection in curRoute)
+            displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
+            foreach (Connection connection in (subwayMap.CurRoute))
             {
                 displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
             }

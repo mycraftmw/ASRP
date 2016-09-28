@@ -16,15 +16,8 @@ namespace AdvancedSubwayRoutePlanning
     public partial class App : Application
     {
         private string[] args;
-        public List<Connection> CurRoute = new List<Connection>();
-        public Station StartStation;
-        public Station EndStation;
         public ObservableCollection<DisplayRouteUnit> DisplayRouteUnitList = new ObservableCollection<DisplayRouteUnit>();
         public bool IsShortestPlaning;
-
-        public App()
-        {
-        }
 
         private void AppStartup(object sender, StartupEventArgs e)
         {
