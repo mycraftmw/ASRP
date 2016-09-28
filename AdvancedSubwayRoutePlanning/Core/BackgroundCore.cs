@@ -64,10 +64,14 @@ namespace Core
                 {
                     route = SubwayMap.GetDirections(args[1], args[2], args[0]);
                     Printer.PrintDirections(route);
+                    mainWindow.Close();
+                    return;
                 }
                 else
                 {
                     Printer.WriteLine("输入格式错误");
+                    mainWindow.Close();
+                    return;
                 }
 
             }
