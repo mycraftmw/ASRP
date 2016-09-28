@@ -1,18 +1,20 @@
 using System;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace Core
 {
     class Loader
     {
         public SubwayMap SubwayMap { get; private set; }
+        public List<string> CityList { get; }
         public Loader()
         {
+            CityList = new List<string>();
         }
-        public SubwayMap LoadFromXMLFile(string path)
+        public List<string> LoadCityList(string path)
         {
-            SubwayMap = new SubwayMap();
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException("文件不存在！");
@@ -21,7 +23,28 @@ namespace Core
             {
                 throw new FormatException("文件类型错误！");
             }
+            CityList.Clear();
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+            XmlNodeList cities = doc.DocumentElement.ChildNodes;
+            foreach (XmlNode city in cities)
+            {
+                CityList.Add(city.Attributes.GetNamedItem("name").InnerXml);
+            }
 
+            return CityList;
+        }
+        public SubwayMap LoadSubwayMap(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("文件不存在！");
+            }
+            if (new FileInfo(path).Extension.ToLowerInvariant() != ".xml")
+            {
+                throw new FormatException("文件类型错误！");
+            }
+            SubwayMap = new SubwayMap();
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
             XmlNodeList lines = doc.DocumentElement.ChildNodes;
