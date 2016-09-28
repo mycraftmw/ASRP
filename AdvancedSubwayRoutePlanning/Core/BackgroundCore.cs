@@ -15,7 +15,7 @@ namespace Core
         private BackgroundCore()
         {
             loader = new Loader();
-            SubwayMap = loader.LoadFromXMLFile(@"beijing-subway.xml");
+            SubwayMap = loader.LoadFromXMLFile(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
         public static BackgroundCore GetBackgroundCore()
