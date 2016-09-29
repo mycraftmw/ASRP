@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvancedSubwayRoutePlanning"
         mc:Ignorable="d"
-        Title="地铁线路规划软件" Height="500" Width="800">
+        Title="地铁线路规划软件" Height="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenHeightKey}}" Width="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenWidthKey}}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -32,7 +32,7 @@
             </Grid.RowDefinitions>
 
             <GroupBox x:Name="groupBox_Cities" Header="城市" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
-                <ComboBox x:Name="comboBox_Cities" HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" ItemsSource="{StaticResource cities}" IsReadOnly="True" Text="北京" Margin="0,5,0,5"/>
+                <ComboBox x:Name="comboBox_Cities" HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" ItemsSource="{StaticResource cities}" IsReadOnly="True" Text="北京" Margin="0,5,0,5" DropDownOpened="comboBox_Cities_DropDownOpened" SelectionChanged="comboBox_Cities_SelectionChanged"/>
             </GroupBox>
 
             <GroupBox x:Name="groupBox_Route" Header="路径规划" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0">

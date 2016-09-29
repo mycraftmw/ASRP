@@ -9,7 +9,7 @@ namespace Core
     {
         public SubwayMap SubwayMap { get; private set; }
         public Printer Printer { get; }
-        public List<string> CityList;
+        public List<string> CityList{ get; }
         private Loader loader;
         private List<Connection> route;
         private static BackgroundCore backgroundCore;
@@ -17,7 +17,7 @@ namespace Core
         {
             loader = new Loader();
             CityList = loader.LoadCityList(@"map/subway-list.xml");
-            SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
+            SubwayMap = loader.LoadSubwayMap(@"map/shanghai-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
         public static BackgroundCore GetBackgroundCore()
@@ -33,7 +33,7 @@ namespace Core
             SubwayMap = null;
             foreach (XmlNode city in cities)
                 if (city.Attributes.GetNamedItem("name").InnerXml == CityName)
-                    SubwayMap = loader.LoadSubwayMap(city.Attributes.GetNamedItem("src").InnerXml);
+                    SubwayMap = loader.LoadSubwayMap(@city.Attributes.GetNamedItem("src").InnerXml);
             if (SubwayMap == null)
                 throw new ArgumentException("The City does not exist!");
         }
