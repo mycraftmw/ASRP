@@ -68,7 +68,9 @@ namespace Core
                 }
                 else if (args.Length == 3)
                 {
-                    route = SubwayMap.GetDirections(args[1], args[2], args[0]);
+                    SubwayMap.SetStartStation(args[1]);
+                    SubwayMap.SetEndStation(args[2]);
+                    route = SubwayMap.GetDirections(args[0]);
                     Printer.PrintDirections(route);
                     mainWindow.Close();
                     return;
