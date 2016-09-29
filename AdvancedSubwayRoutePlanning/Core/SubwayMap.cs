@@ -10,8 +10,8 @@ namespace Core
         public List<Connection> Connections { get; }
         public List<SubwayLine> SubwayLines { get; }
         private Hashtable map;
-        public Station StartStation;
-        public Station EndStation;
+        public Station StartStation { get; private set; }
+        public Station EndStation { get; private set; }
         public List<Connection> CurRoute;
 
         public SubwayMap()
@@ -20,6 +20,8 @@ namespace Core
             this.Connections = new List<Connection>();
             this.SubwayLines = new List<SubwayLine>();
             this.map = new Hashtable();
+            this.StartStation = null;
+            this.EndStation = null;
         }
 
         public bool HasStation(string stationName)
@@ -91,10 +93,10 @@ namespace Core
             -1;
             if (transferCost < 0) throw new AggregateException("模式错误");
 
-            if (beginStationName == endStationName) return new List<Connection>();
+            this.StartStation = Stations.Find(x => x.Name == beginStationName);
+            this.EndStation = Stations.Find(x => x.Name == endStationName);
 
-            Station beginStation = Stations.Find(x => x.Name == beginStationName);
-            Station endStation = Stations.Find(x => x.Name == endStationName);
+            if (beginStationName == endStationName) return new List<Connection>();
             Queue<Station> queue = new Queue<Station>();
             Hashtable routeMap = new Hashtable();
             List<List<Connection>> initRouteList = new List<List<Connection>>();
@@ -102,8 +104,8 @@ namespace Core
             Connection initConnection = new Connection(Stations.Find(x => x.Id == 0), Stations.Find(x => x.Id == 0), "*",-1);
             initRoute.Add(initConnection);
             initRouteList.Add(initRoute);
-            routeMap.Add(beginStation, initRouteList);
-            queue.Enqueue(beginStation);
+            routeMap.Add(this.StartStation, initRouteList);
+            queue.Enqueue(this.StartStation);
             List<List<Connection>> tRouteList = null;
             List<Connection> tRoute = null;
             while (queue.Count != 0)
@@ -141,9 +143,9 @@ namespace Core
                 });
             }
 
-            if (!routeMap.Contains(endStation)) throw new ArgumentException("站点不连通");
+            if (!routeMap.Contains(this.EndStation)) throw new ArgumentException("站点不连通");
 
-            tRouteList = (List<List<Connection>>)routeMap[endStation];
+            tRouteList = (List<List<Connection>>)routeMap[this.EndStation];
             tRoute = tRouteList[0];
             tRouteList.ForEach(x =>
             {
