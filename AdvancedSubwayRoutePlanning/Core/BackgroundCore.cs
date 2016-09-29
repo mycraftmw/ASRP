@@ -9,22 +9,25 @@ namespace Core
     {
         public SubwayMap SubwayMap { get; private set; }
         public Printer Printer { get; }
-        public List<string> CityList{ get; }
+        public List<string> CityList;
         private Loader loader;
         private List<Connection> route;
         private static BackgroundCore backgroundCore;
+
         private BackgroundCore()
         {
             loader = new Loader();
             CityList = loader.LoadCityList(@"map/subway-list.xml");
-            SubwayMap = loader.LoadSubwayMap(@"map/shanghai-subway.xml");
+            SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
+
         public static BackgroundCore GetBackgroundCore()
         {
             if (backgroundCore == null) backgroundCore = new BackgroundCore();
             return backgroundCore;
         }
+
         public void RefreshMap(string CityName)
         {
             XmlDocument doc = new XmlDocument();
@@ -33,10 +36,11 @@ namespace Core
             SubwayMap = null;
             foreach (XmlNode city in cities)
                 if (city.Attributes.GetNamedItem("name").InnerXml == CityName)
-                    SubwayMap = loader.LoadSubwayMap(@city.Attributes.GetNamedItem("src").InnerXml);
+                    SubwayMap = loader.LoadSubwayMap(city.Attributes.GetNamedItem("src").InnerXml);
             if (SubwayMap == null)
                 throw new ArgumentException("The City does not exist!");
         }
+
         public void SelectFunction(MainWindow mainWindow, string[] args)
         {
             //try

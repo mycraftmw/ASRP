@@ -9,10 +9,12 @@ namespace Core
     {
         public SubwayMap SubwayMap { get; private set; }
         public List<string> CityList { get; }
+
         public Loader()
         {
             CityList = new List<string>();
         }
+
         public List<string> LoadCityList(string path)
         {
             if (!File.Exists(path))
@@ -34,6 +36,7 @@ namespace Core
 
             return CityList;
         }
+
         public SubwayMap LoadSubwayMap(string path)
         {
             if (!File.Exists(path))
@@ -59,11 +62,10 @@ namespace Core
                 foreach (XmlNode sta in stations)
                 {
                     XmlAttributeCollection a = sta.Attributes;
-                    bool b;
-                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "" || a.GetNamedItem("iu").InnerXml == "false") b = false;
-                    else b = true;
-                    if (!b) continue;
+                    bool b=true ;
+                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "" || a.GetNamedItem("iu").InnerXml == "false") continue;
                     string stationName= a.GetNamedItem("sid").InnerXml;
+                    if (stationName == null || stationName == "") continue;
                     double x = Convert.ToDouble(a.GetNamedItem("x").InnerXml);
                     double y = Convert.ToDouble(a.GetNamedItem("y").InnerXml);
                     bool isTransfer = Convert.ToBoolean(a.GetNamedItem("ex").InnerXml);
@@ -84,20 +86,17 @@ namespace Core
 
         private void CheckDoubleLine(string sa, string sb, string lineName)
         {
-            string a=sa.CompareTo(sb)>0?sa:sb;
-            string b=a==sa?sb:sa;
-            if (SubwayMap.CountConnection(a, b) > 0)
+            if (SubwayMap.Connections.Exists(x => x.BeginStation.Name == sb && x.EndStation.Name == sa && x.Type == -1))
             {
-                SubwayMap.Connections.Find(x => x.BeginStation.Name == a && x.EndStation.Name == b).Type = 1;
-                SubwayMap.AddConnection(a, b, lineName, 2);
-                SubwayMap.AddConnection(b, a, lineName, -1);
+                SubwayMap.Connections.Find(x => x.BeginStation.Name == sa && x.EndStation.Name == sb).Type = 1;
+                SubwayMap.AddConnection(sa, sb, lineName, 2);
+                SubwayMap.AddConnection(sb, sa, lineName, -1);
             }
             else
             {
-                SubwayMap.AddConnection(a, b, lineName, 0);
-                SubwayMap.AddConnection(b, a, lineName, -1);
+                SubwayMap.AddConnection(sa, sb, lineName, 0);
+                SubwayMap.AddConnection(sb, sa, lineName, -1);
             }
-
         }
     }
 }
