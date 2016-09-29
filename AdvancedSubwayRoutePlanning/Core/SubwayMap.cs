@@ -106,7 +106,7 @@ namespace Core
             mode == "-c" ? 10000 :
             -1;
             if (transferCost < 0) throw new AggregateException("模式错误");
-
+            if (this.StartStation == null || this.EndStation == null) throw new Exception("站点未设置！");
             if (this.StartStation.Equals(this.EndStation)) return new List<Connection>();
             Queue<Station> queue = new Queue<Station>();
             Hashtable routeMap = new Hashtable();
