@@ -25,7 +25,7 @@ namespace AdvancedSubwayRoutePlanning
     {
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
         private ObservableCollection<string> displayStationsName = new ObservableCollection<string>();
-        public SubwayMap subwayMap;
+        private SubwayMap subwayMap;
 
         public MainWindow()
         {
