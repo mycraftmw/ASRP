@@ -53,9 +53,9 @@ namespace AdvancedSubwayRoutePlanning
             else
                 mode = "-c";
 
-            subwayMap.StartStation = subwayMap.GetStation(comboBox_StartStation.Text);
-            subwayMap.EndStation = subwayMap.GetStation(comboBox_EndStation.Text);
-            subwayMap.CurRoute = subwayMap.GetDirections(comboBox_StartStation.Text, comboBox_EndStation.Text, mode);
+            subwayMap.SetStartStation(comboBox_StartStation.Text);
+            subwayMap.SetEndStation(comboBox_EndStation.Text);
+            subwayMap.CurRoute = subwayMap.GetDirections(mode);
 
             displayRouteUnitList.Clear();
 

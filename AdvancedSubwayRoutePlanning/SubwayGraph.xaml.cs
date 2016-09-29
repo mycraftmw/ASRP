@@ -312,12 +312,12 @@ namespace AdvancedSubwayRoutePlanning
             {
                 if (subwayMap.StartStation == null)
                 {
-                    subwayMap.StartStation = station;
+                    subwayMap.SetEndStation(station.Name);
                     ((MainWindow)((App)App.Current).MainWindow).comboBox_StartStation.Text = station.Name;
                 }
                 else
                 {
-                    subwayMap.EndStation = station;
+                    subwayMap.SetEndStation(station.Name);
                     ((MainWindow)((App)App.Current).MainWindow).comboBox_EndStation.Text = station.Name;
 
                     //查找乘车线路
@@ -331,7 +331,7 @@ namespace AdvancedSubwayRoutePlanning
                         else
                             mode = "-c";
 
-                        subwayMap.CurRoute = subwayMap.GetDirections(subwayMap.StartStation.Name, subwayMap.EndStation.Name, mode);
+                        subwayMap.CurRoute = subwayMap.GetDirections(mode);
 
                         if ((subwayMap.CurRoute == null || subwayMap.CurRoute.Count == 0))
                             return;
@@ -354,8 +354,8 @@ namespace AdvancedSubwayRoutePlanning
             }
             else if (Distance(e.MouseDevice.GetPosition(this), mouseDownPoint) < 1)//是否发生拖拽
             {
-                subwayMap.StartStation = null;
-                subwayMap.EndStation = null;
+                subwayMap.SetStartStation("");
+                subwayMap.SetEndStation("");
                 ((MainWindow)((App)App.Current).MainWindow).comboBox_StartStation.Text = "";
                 ((MainWindow)((App)App.Current).MainWindow).comboBox_EndStation.Text = "";
                 if (subwayMap.CurRoute != null)
