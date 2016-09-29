@@ -272,7 +272,7 @@ namespace AdvancedSubwayRoutePlanning
         private Station GetStationAt(Point pt)
         {
             Point graphPt = ClientToGraph(pt);
-            return subwayMap.Stations.FirstOrDefault((Station station) => station.GetStationRect().Contains(graphPt));
+            return subwayMap.Stations.FirstOrDefault((Station station) => stationRect(station).Contains(graphPt));
         }
 
         private Point ClientToGraph(Point pt)
@@ -286,6 +286,12 @@ namespace AdvancedSubwayRoutePlanning
         {
             Point pt = ClientToGraph(rect.Location);
             return new Rect(pt.X, pt.Y, (int)(rect.Width / zoomScale), (int)(rect.Height / zoomScale));
+        }
+
+        private Rect stationRect(Station station)
+        {
+            double r = station.IsTransfer ? 7 : 5;
+            return new Rect(station.X - r - 1, station.Y - r - 1, r * 2 + 1, r * 2 + 1);
         }
 
         #endregion
