@@ -13,6 +13,7 @@ namespace Core
         public Station StartStation;
         public Station EndStation;
         public List<Connection> CurRoute;
+
         public SubwayMap()
         {
             this.Stations = new List<Station>();
@@ -25,6 +26,7 @@ namespace Core
         {
             return Stations.Exists(x => x.Name == stationName);
         }
+
         public void AddStation(string stationName, double x, double y, bool isTransfer)
         {
             if (!HasStation(stationName))
@@ -33,10 +35,12 @@ namespace Core
                 Stations.Add(station);
             }
         }
+
         public bool HasConnection(string begin, string end, string lineName)
         {
             return Connections.Exists(x => x.BeginStation.Name == begin && x.EndStation.Name == end && x.LineName == lineName);
         }
+
         public void AddConnection(string begin, string end, string lineName, int type)
         {
             if (HasStation(begin) && HasStation(end))
@@ -182,8 +186,8 @@ namespace Core
             }
             else
                 return -1;
-            throw new NotImplementedException();
         }
+
         public List<Station> GetLine(string lineName)
         {
             List<Station> line = new List<Station>();

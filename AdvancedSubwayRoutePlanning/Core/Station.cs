@@ -20,6 +20,7 @@ namespace Core
             this.Y = y;
             this.IsTransfer = isTransfer;
         }
+
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
@@ -28,10 +29,12 @@ namespace Core
             }
             return this.Id == ((Station)obj).Id;
         }
+
         public override int GetHashCode()
         {
             return this.Id;
         }
+
         public override string ToString()
         {
             return this.Name;
@@ -42,7 +45,5 @@ namespace Core
             double r = this.IsTransfer ? 7 : 5;
             return new Rect(X - r - 1, Y - r - 1, r * 2 + 1, r * 2 + 1);
         }
-
-
     }
 }

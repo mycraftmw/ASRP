@@ -9,10 +9,12 @@ namespace Core
     {
         public SubwayMap SubwayMap { get; private set; }
         public List<string> CityList { get; }
+
         public Loader()
         {
             CityList = new List<string>();
         }
+
         public List<string> LoadCityList(string path)
         {
             if (!File.Exists(path))
@@ -34,6 +36,7 @@ namespace Core
 
             return CityList;
         }
+
         public SubwayMap LoadSubwayMap(string path)
         {
             if (!File.Exists(path))
@@ -80,6 +83,7 @@ namespace Core
             }
             return this.SubwayMap;
         }
+
         private void CheckDoubleLine(string sa, string sb, string lineName)
         {
             if (SubwayMap.Connections.Exists(x => x.BeginStation.Name == sb && x.EndStation.Name == sa && x.Type == -1))

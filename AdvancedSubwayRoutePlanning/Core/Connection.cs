@@ -6,6 +6,7 @@ namespace Core
         public Station EndStation { get; }
         public string LineName { get; }
         private int type;
+
         public int Type
         {
             get { return type; }
@@ -15,6 +16,7 @@ namespace Core
                     type = value;
             }
         }
+
         public Connection(Station beginStationName, Station endStationName, string lineName, int type)
         {
             this.BeginStation = beginStationName;
@@ -22,6 +24,7 @@ namespace Core
             this.LineName = lineName;
             this.type = type;
         }
+
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
@@ -30,6 +33,7 @@ namespace Core
             }
             return this.LineName == ((Connection)obj).LineName && this.BeginStation.Equals(((Connection)obj).BeginStation) && this.EndStation.Equals(((Connection)obj).EndStation);
         }
+
         public override int GetHashCode()
         {
             return (LineName + "|" + BeginStation + "|" + EndStation).GetHashCode();
