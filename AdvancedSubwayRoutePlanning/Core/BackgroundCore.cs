@@ -22,7 +22,7 @@ namespace Core
             CityMap = loader.LoadCityMap(@"map/subway-list.xml");
             CityList = new List<string>();
             foreach (string k in CityMap.Keys)
-                CityList.Add(Convert.ToString(CityMap[k]));
+                CityList.Add(k);
             SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
