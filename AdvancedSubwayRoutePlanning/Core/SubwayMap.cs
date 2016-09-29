@@ -10,6 +10,7 @@ namespace Core
         public List<Connection> Connections { get; }
         public List<SubwayLine> SubwayLines { get; }
         private Hashtable map;
+
         public Station StartStation { get; private set; }
         public Station EndStation { get; private set; }
         public List<Connection> CurRoute;
@@ -24,6 +25,20 @@ namespace Core
             this.EndStation = null;
         }
 
+        public void SetStartStation(string name)
+        {
+            if (HasStation(name))
+            {
+                this.StartStation = Stations.Find(x => x.Name == name);
+            }
+        }
+        public void SetEndStation(string name)
+        {
+            if (HasStation(name))
+            {
+                this.EndStation = Stations.Find(x => x.Name == name);
+            }
+        }
         public bool HasStation(string stationName)
         {
             return Stations.Exists(x => x.Name == stationName);
@@ -84,19 +99,15 @@ namespace Core
             SubwayLines.Add(new SubwayLine(name, color));
         }
 
-        public List<Connection> GetDirections(string beginStationName, string endStationName, string mode)
+        public List<Connection> GetDirections(string mode)
         {
-            if (!HasStation(beginStationName) || !HasStation(endStationName)) throw new ArgumentException("站点不存在！");
             int transferCost =
             mode == "-b" ? 0 :
             mode == "-c" ? 10000 :
             -1;
             if (transferCost < 0) throw new AggregateException("模式错误");
 
-            this.StartStation = Stations.Find(x => x.Name == beginStationName);
-            this.EndStation = Stations.Find(x => x.Name == endStationName);
-
-            if (beginStationName == endStationName) return new List<Connection>();
+            if (this.StartStation.Equals(this.EndStation)) return new List<Connection>();
             Queue<Station> queue = new Queue<Station>();
             Hashtable routeMap = new Hashtable();
             List<List<Connection>> initRouteList = new List<List<Connection>>();

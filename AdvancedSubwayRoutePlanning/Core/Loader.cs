@@ -62,7 +62,6 @@ namespace Core
                 foreach (XmlNode sta in stations)
                 {
                     XmlAttributeCollection a = sta.Attributes;
-                    bool b=true ;
                     if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "" || a.GetNamedItem("iu").InnerXml == "false") continue;
                     string stationName= a.GetNamedItem("sid").InnerXml;
                     if (stationName == null || stationName == "") continue;
