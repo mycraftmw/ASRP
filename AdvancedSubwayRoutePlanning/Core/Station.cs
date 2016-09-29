@@ -36,13 +36,5 @@ namespace Core
         {
             return this.Name;
         }
-
-        public Rect GetStationRect()
-        {
-            double r = this.IsTransfer ? 7 : 5;
-            return new Rect(X - r - 1, Y - r - 1, r * 2 + 1, r * 2 + 1);
-        }
-
-
     }
 }
