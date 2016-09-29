@@ -27,17 +27,11 @@ namespace Core
 
         public void SetStartStation(string name)
         {
-            if (HasStation(name))
-            {
-                this.StartStation = Stations.Find(x => x.Name == name);
-            }
+            this.StartStation = Stations.Find(x => x.Name == name);
         }
         public void SetEndStation(string name)
         {
-            if (HasStation(name))
-            {
-                this.EndStation = Stations.Find(x => x.Name == name);
-            }
+            this.EndStation = Stations.Find(x => x.Name == name);
         }
         public bool HasStation(string stationName)
         {
