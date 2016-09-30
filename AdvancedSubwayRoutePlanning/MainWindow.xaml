@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdvancedSubwayRoutePlanning"
         mc:Ignorable="d"
-        Title="地铁线路规划软件" Height="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenHeightKey}}" Width="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenWidthKey}}" Icon="Resources/MetroApp.ico" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="地铁线路规划软件" Height="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenHeightKey}}" Width="{DynamicResource {x:Static SystemParameters.FullPrimaryScreenWidthKey}}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -48,13 +48,13 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <RadioButton x:Name="radioButton_Shortest" Content="最短路径" Grid.Row="0" Grid.Column="0" Margin="0,5,0,5" IsChecked="True" Click="radioButton_Shortest_Click"/>
-                    <RadioButton x:Name="radioButton_Least" Content="最少换乘" Grid.Row="0" Grid.Column="1" Margin="0,5,0,5" IsChecked="False" Click="radioButton_Least_Click"/>
+                    <RadioButton x:Name="radioButton_Shortest" Content="最短路径" Grid.Row="0" Grid.Column="0" Margin="0,5,0,5" IsChecked="True"/>
+                    <RadioButton x:Name="radioButton_Least" Content="最少换乘" Grid.Row="0" Grid.Column="1" Margin="0,5,0,5" IsChecked="False"/>
                     <TextBlock x:Name="textBlock_StartStation" Text="起始站点：" Grid.Row="1" Grid.Column="0" Margin="0,5,0,5"/>
                     <ComboBox x:Name="comboBox_StartStation" Grid.Row="1" Grid.Column="1" IsEditable="True" StaysOpenOnEdit="True" Margin="0,5,0,5" Text="{Binding Path=startStation.Name, ElementName=subwayGraph}"/>
                     <TextBlock x:Name="textBlock_EndStation" Text="目标站点：" Grid.Row="2" Grid.Column="0" Margin="0,5,0,5"/>
                     <ComboBox x:Name="comboBox_EndStation" Grid.Row="2" Grid.Column="1" IsEditable="True" StaysOpenOnEdit="True" Margin="0,5,0,5" Text="{Binding Path=endStation.Name, ElementName=subwayGraph}"/>
-                    <Button x:Name="button_Search" Content="查找" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,5" Click="button_Search_Click"/>
+                    <Button x:Name="button_Search" Content="查找" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,5" Click="searchRoute"/>
                 </Grid>
             </GroupBox>
 

@@ -23,15 +23,9 @@ namespace AdvancedSubwayRoutePlanning
     /// </summary>
     public partial class MainWindow : Window
     {
-        #region 字段区域
-
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
         private ObservableCollection<string> displayStationsName = new ObservableCollection<string>();
         private SubwayMap subwayMap;
-
-        #endregion
-
-        #region 构造区域
 
         public MainWindow()
         {
@@ -44,17 +38,14 @@ namespace AdvancedSubwayRoutePlanning
             ((App)App.Current).IsShortestPlaning = (bool)radioButton_Shortest.IsChecked;
 
             BackgroundCore.GetBackgroundCore().SelectFunction(this, ((App)App.Current).Args);
+            foreach (Station station in subwayMap.Stations)
+            {
+                displayStationsName.Add(station.Name);
+            }
         }
 
-        #endregion
-
-        #region 功能函数区域
-
-        private void searchRoute()
+        private void searchRoute(object sender, RoutedEventArgs e)
         {
-            if (subwayMap == null)
-                return;
-
             string mode;
 
             if ((bool)radioButton_Shortest.IsChecked)
@@ -62,22 +53,12 @@ namespace AdvancedSubwayRoutePlanning
             else
                 mode = "-c";
 
-            try
-            {
-                subwayMap.SetStartStation(comboBox_StartStation.Text);
-                subwayMap.SetEndStation(comboBox_EndStation.Text);
-                subwayMap.CurRoute = subwayMap.GetDirections(mode);
-            }
-            catch (Exception ex)
-            {
-                ErrorWindow errorWindow = new ErrorWindow();
-                errorWindow.textBlock_Msg.Text = ex.Message;
-                errorWindow.Show();
-                return;
-            }
-
+            subwayMap.SetStartStation(comboBox_StartStation.Text);
+            subwayMap.SetEndStation(comboBox_EndStation.Text);
+            subwayMap.CurRoute = subwayMap.GetDirections(mode);
 
             displayRouteUnitList.Clear();
+
             displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
             foreach (Connection connection in (subwayMap.CurRoute))
             {
@@ -85,28 +66,6 @@ namespace AdvancedSubwayRoutePlanning
             }
 
             subwayGraph.InvalidateVisual();
-        }
-
-        #endregion
-
-        #region 事件区域
-
-        private void button_Search_Click(object sender, RoutedEventArgs e)
-        {
-            searchRoute();
-        }
-
-
-        private void radioButton_Shortest_Click(object sender, RoutedEventArgs e)
-        {
-            if (subwayMap != null && subwayMap.StartStation != null && subwayMap.EndStation != null)
-                searchRoute();
-        }
-
-        private void radioButton_Least_Click(object sender, RoutedEventArgs e)
-        {
-            if (subwayMap != null && subwayMap.StartStation != null && subwayMap.EndStation != null)
-                searchRoute();
         }
 
         private void comboBox_StartStation_GotMouseCapture(object sender, MouseEventArgs e)
@@ -138,22 +97,8 @@ namespace AdvancedSubwayRoutePlanning
 
         private void comboBox_Cities_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.comboBox_Cities.SelectedItem != null)
-            {
-                BackgroundCore.GetBackgroundCore().RefreshMap((string)this.comboBox_Cities.SelectedItem);
-                subwayGraph.IsEnabled = true;
-                subwayGraph.SetSubwayMap(BackgroundCore.GetBackgroundCore().SubwayMap);
-                this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
-                displayStationsName.Clear();
-                foreach (Station station in subwayMap.Stations)
-                {
-                    displayStationsName.Add(station.Name);
-                }
-                subwayGraph.InvalidateVisual();
-            }
+            BackgroundCore.GetBackgroundCore().RefreshMap(this.comboBox_Cities.Text);
         }
-
-        #endregion
     }
 
     public class Cities : ObservableCollection<string>

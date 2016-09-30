@@ -54,11 +54,8 @@ namespace AdvancedSubwayRoutePlanning
             //绘制背景
             drawBackground(dc);
 
-            //未初始化地图时不进行渲染
-            if (subwayMap == null)
-                return;
-
             //滚动与缩放
+            Point graphPoint = Mouse.GetPosition(this);
             dc.PushTransform(new TranslateTransform(scrollX, scrollY));
             dc.PushTransform(new ScaleTransform(zoomScale, zoomScale));
 
@@ -71,10 +68,6 @@ namespace AdvancedSubwayRoutePlanning
             //绘制起点和终点
             drawStartAndEndStations(dc);
 
-            //取消滚动与缩放
-            dc.Pop();
-            dc.Pop();
-
             //绘制遮挡框架
             drawFrame(dc);
 
@@ -85,14 +78,14 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawBackground(DrawingContext dc)
         {
-            Rect rc = new Rect(0, 0, this.ActualWidth, this.ActualHeight);
+            Rect rc = new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(this.ActualWidth / zoomScale), Math.Abs(this.ActualHeight / zoomScale));
             dc.DrawRectangle(Brushes.White, new Pen(Brushes.Black, 0), rc);
         }
 
         private void drawFrame(DrawingContext dc)
         {
-            RectangleGeometry rect1 = new RectangleGeometry(new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            RectangleGeometry rect2 = new RectangleGeometry(new Rect(0, 0, ((App)App.Current).MainWindow.ActualWidth, ((App)App.Current).MainWindow.ActualHeight));
+            RectangleGeometry rect1 = new RectangleGeometry(new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(this.ActualWidth / zoomScale), Math.Abs(this.ActualHeight / zoomScale)));
+            RectangleGeometry rect2 = new RectangleGeometry(new Rect(-scrollX / zoomScale, -scrollY / zoomScale, Math.Abs(((App)App.Current).MainWindow.ActualWidth / zoomScale), Math.Abs(((App)App.Current).MainWindow.ActualHeight / zoomScale)));
 
             GeometryGroup group = new GeometryGroup();
             group.FillRule = FillRule.EvenOdd;
@@ -104,18 +97,12 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawLineList(DrawingContext dc)
         {
-            double maxNameLenth = 0;
-
-            //获取字符集字符最长长度
-            foreach (SubwayLine line in subwayMap.SubwayLines)
-            {
-                FormattedText formattedText = createFormattedText(line.Name, 12);
-                if (formattedText.Width > maxNameLenth)
-                    maxNameLenth = formattedText.Width;
-            }
+            //反向滚动与缩放
+            dc.Pop();
+            dc.Pop();
 
             //遮罩层
-            Rect rc = new Rect(5, 5, 60 + maxNameLenth, (subwayMap.SubwayLines.Count + 1) * 15);
+            Rect rc = new Rect(5, 5, 250, (subwayMap.SubwayLines.Count + 1) * 15);
             dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(180, 245, 245, 245)), new Pen(Brushes.Black, 0.5), rc);
 
             //线路列表
@@ -123,11 +110,11 @@ namespace AdvancedSubwayRoutePlanning
             foreach (SubwayLine line in subwayMap.SubwayLines)
             {
                 //绘制线路标示线
-                dc.DrawLine(new Pen(new SolidColorBrush(hexToColor(line.Color)), 5), new Point(rc.X + 10, y), new Point(rc.X + 50, y));
+                dc.DrawLine(new Pen(new SolidColorBrush(hexToColor(line.Color)), 5), new Point(rc.X + 10, y), new Point(rc.X + 70, y));
 
                 //绘制线路名
-                FormattedText formattedText = createFormattedText(line.Name, 12);
-                dc.DrawText(formattedText, new Point(rc.X + 55, y - formattedText.Height / 2));
+                FormattedText formattedText = createFormattedText(line.Name);
+                dc.DrawText(formattedText, new Point(rc.X + 80, y - formattedText.Height / 2));
 
                 y += 15;
             }
@@ -177,21 +164,14 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawStation(DrawingContext dc, Station station)
         {
-            int textOffset = 12;
             //绘制地铁站圆圈
             Pen pen = new Pen(new SolidColorBrush(Colors.Black), station.IsTransfer ? 1 : 0.5);
             double r = station.IsTransfer ? 7 : 5;
             dc.DrawEllipse(Brushes.White, pen, new Point(station.X, station.Y), r, r);
 
             //绘制地铁站名
-            FormattedText formattedText = createFormattedText(station.Name, 9);
-            switch (station.Name)
-            {
-                case "清华东路西口":
-                    textOffset = (int)(2 * formattedText.Height + 2 * r);
-                    break;
-            }
-            dc.DrawText(formattedText, new Point(station.X - formattedText.Width / 2, station.Y + formattedText.Height + r - textOffset));
+            FormattedText formattedText = createFormattedText(station.Name);
+            dc.DrawText(formattedText, new Point(station.X - formattedText.Width / 2, station.Y + formattedText.Height - 8));
         }
 
         private void drawStartAndEndStations(DrawingContext dc)
@@ -250,12 +230,6 @@ namespace AdvancedSubwayRoutePlanning
 
         #region 支撑函数区域
 
-        public void SetSubwayMap(SubwayMap subwayMap)
-        {
-            this.subwayMap = subwayMap;
-        }
-
-
         //以o为源点，旋转v，角度为angle，缩放为scale
         private Point Rotate(Point v, Point o, double angle, double scale)
         {
@@ -275,9 +249,9 @@ namespace AdvancedSubwayRoutePlanning
         }
 
         //简化设置FormattedText
-        private FormattedText createFormattedText(string text, int size)
+        private FormattedText createFormattedText(string text)
         {
-            return new FormattedText(text, new System.Globalization.CultureInfo(0x0804), FlowDirection.LeftToRight, new Typeface("Verdana"), size, Brushes.Black);
+            return new FormattedText(text, new System.Globalization.CultureInfo(0x0804), FlowDirection.LeftToRight, new Typeface("Verdana"), 12, Brushes.Black);
         }
 
         //16进制转颜色
@@ -363,6 +337,7 @@ namespace AdvancedSubwayRoutePlanning
                             return;
 
                         displayRouteUnitList.Clear();
+
                         displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
                         foreach (Connection connection in subwayMap.CurRoute)
                         {
@@ -373,7 +348,7 @@ namespace AdvancedSubwayRoutePlanning
                     }
                     finally
                     {
-                        Cursor = Cursors.Arrow;
+                        Cursor = Cursors.AppStarting;
                     }
                 }
             }
@@ -405,8 +380,6 @@ namespace AdvancedSubwayRoutePlanning
 
         private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if ((zoomScale < 0.7 && e.Delta < 0) || (zoomScale > 1.5 && e.Delta > 0))
-                return;
             zoomScale += (e.Delta > 0 ? 0.1f : -0.1f);
 
             InvalidateVisual();
