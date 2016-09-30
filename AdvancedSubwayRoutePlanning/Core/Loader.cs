@@ -69,13 +69,13 @@ namespace Core
                         if (SubwayMap.Connections.Exists(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName && w.Type == -1))
                         {
                             SubwayMap.Connections.Find(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName).Type = 1;
-                            SubwayMap.AddConnection(stationName, lastName, lineName, 2);
-                            SubwayMap.AddConnection(lastName, stationName, lineName, -1);
+                            SubwayMap.AddConnection(lastName, stationName, lineName, 2);
+                            SubwayMap.AddConnection(stationName, lastName, lineName, -1);
                         }
                         else
                         {
-                            SubwayMap.AddConnection(stationName, lastName, lineName, 0);
-                            SubwayMap.AddConnection(lastName, stationName, lineName, -1);
+                            SubwayMap.AddConnection(lastName, stationName, lineName, 0);
+                            SubwayMap.AddConnection(stationName, lastName, lineName, -1);
                         }
                     }
                     lastName = stationName;
@@ -86,13 +86,13 @@ namespace Core
                     if (SubwayMap.Connections.Exists(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName && w.Type == -1))
                     {
                         SubwayMap.Connections.Find(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName).Type = 1;
-                        SubwayMap.AddConnection(stationName, lastName, lineName, 2);
-                        SubwayMap.AddConnection(lastName, stationName, lineName, -1);
+                        SubwayMap.AddConnection(lastName, stationName, lineName, 2);
+                        SubwayMap.AddConnection(stationName, lastName, lineName, -1);
                     }
                     else
                     {
-                        SubwayMap.AddConnection(stationName, lastName, lineName, 0);
-                        SubwayMap.AddConnection(lastName, stationName, lineName, -1);
+                        SubwayMap.AddConnection(lastName, stationName, lineName, 0);
+                        SubwayMap.AddConnection(stationName, lastName, lineName, -1);
                     }
                 }
             }
