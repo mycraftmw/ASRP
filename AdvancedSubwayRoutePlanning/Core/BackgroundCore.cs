@@ -23,7 +23,6 @@ namespace Core
             CityList = new List<string>();
             foreach (string k in CityMap.Keys)
                 CityList.Add(k);
-            SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
 
@@ -40,12 +39,13 @@ namespace Core
             {
                 throw new ArgumentException("The city does not exist.");
             }
-            SubwayMap = loader.LoadSubwayMap(@"map/" + (string)CityMap[CityName]);
+            SubwayMap = loader.LoadSubwayMap((string)CityMap[CityName]);
         }
 
         public void SelectFunction(MainWindow mainWindow, string[] args)
         {
-            //try
+            //TODO:fix this bug.
+            try
             {
                 mainWindow.Hide();
 
@@ -85,12 +85,12 @@ namespace Core
                 }
 
             }
-            /*catch (System.Exception e)
+            catch (System.Exception e)
             {
                 Console.WriteLine(e);
                 mainWindow.Close();
                 return;
-            }*/
+            }
         }
     }
 }

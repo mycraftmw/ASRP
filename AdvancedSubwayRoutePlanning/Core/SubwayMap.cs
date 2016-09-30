@@ -4,7 +4,7 @@ using System;
 
 namespace Core
 {
-    class SubwayMap
+    public class SubwayMap
     {
         public List<Station> Stations { get; }
         public List<Connection> Connections { get; }
