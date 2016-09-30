@@ -137,9 +137,6 @@
     <Resource Include="Resources\StartStation.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Map\" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\TransferStation.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

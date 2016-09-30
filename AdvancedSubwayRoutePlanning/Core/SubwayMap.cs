@@ -88,9 +88,9 @@ namespace Core
             return Connections.FindAll(x => x.BeginStation == a && x.EndStation == b).Count;
         }
 
-        public void AddSubwayLine(string name, string color)
+        public void AddSubwayLine(string name, string label, string color)
         {
-            SubwayLines.Add(new SubwayLine(name, color));
+            SubwayLines.Add(new SubwayLine(name, label, color));
         }
 
         public void SortStations()
@@ -216,6 +216,17 @@ namespace Core
         public Station GetStation(string stationName)
         {
             return Stations.Find(x => x.Name == stationName);
+        }
+
+        public List<Station> GetLineByLabel(string lineLabel)
+        {
+            List<Station> line = new List<Station>();
+            SubwayLine subwayLine = SubwayLines.Find(w=>w.Label==lineLabel);
+            if (subwayLine != null)
+            {
+                line = GetLine(subwayLine.Name);
+            }
+            return line;
         }
     }
 }
