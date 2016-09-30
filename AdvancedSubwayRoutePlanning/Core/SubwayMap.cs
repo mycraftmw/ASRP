@@ -93,6 +93,11 @@ namespace Core
             SubwayLines.Add(new SubwayLine(name, color));
         }
 
+        public void SortStations()
+        {
+            this.Stations.Sort((x, y) => x.Name.CompareTo(y.Name));
+        }
+
         public List<Connection> GetDirections(string mode)
         {
             int transferCost =
