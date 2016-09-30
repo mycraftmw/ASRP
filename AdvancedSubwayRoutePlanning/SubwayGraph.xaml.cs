@@ -312,7 +312,7 @@ namespace AdvancedSubwayRoutePlanning
             {
                 if (subwayMap.StartStation == null)
                 {
-                    subwayMap.SetEndStation(station.Name);
+                    subwayMap.SetStartStation(station.Name);
                     ((MainWindow)((App)App.Current).MainWindow).comboBox_StartStation.Text = station.Name;
                 }
                 else
