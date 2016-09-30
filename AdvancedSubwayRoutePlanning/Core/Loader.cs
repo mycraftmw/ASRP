@@ -76,6 +76,7 @@ namespace Core
                     DoubleLineCheck(SubwayMap, lastName, stationName, lineName);
                 }
             }
+            SubwayMap.SortStations();
             return SubwayMap;
         }
 
