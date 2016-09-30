@@ -250,9 +250,9 @@ namespace AdvancedSubwayRoutePlanning
 
         #region 支撑函数区域
 
-        public void SetSubwayMap(SubwayMap subwayMap)
+        public void SetSubwayMap()
         {
-            this.subwayMap = subwayMap;
+            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
         }
 
 

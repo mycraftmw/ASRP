@@ -142,7 +142,7 @@ namespace AdvancedSubwayRoutePlanning
             {
                 BackgroundCore.GetBackgroundCore().RefreshMap((string)this.comboBox_Cities.SelectedItem);
                 subwayGraph.IsEnabled = true;
-                subwayGraph.SetSubwayMap(BackgroundCore.GetBackgroundCore().SubwayMap);
+                subwayGraph.SetSubwayMap();
                 this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
                 displayStationsName.Clear();
                 foreach (Station station in subwayMap.Stations)
