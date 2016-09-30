@@ -23,7 +23,6 @@ namespace Core
             CityList = new List<string>();
             foreach (string k in CityMap.Keys)
                 CityList.Add(k);
-            SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
 
@@ -33,7 +32,7 @@ namespace Core
             return backgroundCore;
         }
 
-        public SubwayMap RefreshMap(string CityName)
+        public void RefreshMap(string CityName)
         {
             if (!CityList.Contains(CityName))
             {
@@ -41,57 +40,47 @@ namespace Core
             }
             SubwayMap = null;
             SubwayMap = loader.LoadSubwayMap(@"map/" + (string)CityMap[CityName]);
-            return SubwayMap;
         }
 
         public void SelectFunction(MainWindow mainWindow, string[] args)
         {
-            //try
-            {
-                mainWindow.Hide();
+            mainWindow.Hide();
 
-                if (args.Length == 0)
+            if (args.Length == 0)
+            {
+                while (true)
                 {
-                    while (true)
+                    string input = System.Console.ReadLine();
+                    if (input != "exit")
                     {
-                        string input = System.Console.ReadLine();
-                        if (input != "exit")
-                        {
-                            Printer.PrintSubwayLine(SubwayMap.GetLine(input));
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        Printer.PrintSubwayLine(SubwayMap.GetLine(input));
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
-                else if (args.Length == 1 && args[0] == "-g")
-                {
-                    mainWindow.Show();
-                }
-                else if (args.Length == 3)
-                {
-                    SubwayMap.SetStartStation(args[1]);
-                    SubwayMap.SetEndStation(args[2]);
-                    route = SubwayMap.GetDirections(args[0]);
-                    Printer.PrintDirections(route);
-                    mainWindow.Close();
-                    return;
-                }
-                else
-                {
-                    Printer.WriteLine("输入格式错误");
-                    mainWindow.Close();
-                    return;
-                }
-
             }
-            /*catch (System.Exception e)
+            else if (args.Length == 1 && args[0] == "-g")
             {
-                Console.WriteLine(e);
+                mainWindow.Show();
+            }
+            else if (args.Length == 3)
+            {
+                SubwayMap.SetStartStation(args[1]);
+                SubwayMap.SetEndStation(args[2]);
+                route = SubwayMap.GetDirections(args[0]);
+                Printer.PrintDirections(route);
                 mainWindow.Close();
                 return;
-            }*/
+            }
+            else
+            {
+                Printer.WriteLine("输入格式错误");
+                mainWindow.Close();
+                return;
+            }
+
         }
     }
 }
