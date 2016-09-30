@@ -77,7 +77,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock x:Name="block_Copyright" Margin="0,5,5,0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" TextAlignment="Left" Text="Copyright © 2016 Deng(F) &amp; Yue(B). All rights reserved. Refer to Lave Zhang." VerticalAlignment="Stretch"/>
+            <TextBlock x:Name="block_Copyright" Margin="0,5,5,0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" TextAlignment="Left" Text="Copyright © 2016 Deng(Frond-end) &amp; Yue(Back-end). All rights reserved. Refer to Lave Zhang." VerticalAlignment="Stretch"/>
             <TextBlock x:Name="block_Version"  Margin="0,5,5,0" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" TextAlignment="Right" Text="v2.0" VerticalAlignment="Stretch"/>
         </Grid>
 
