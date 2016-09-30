@@ -33,14 +33,15 @@ namespace Core
             return backgroundCore;
         }
 
-        public void RefreshMap(string CityName)
+        public SubwayMap RefreshMap(string CityName)
         {
-            SubwayMap = null;
             if (!CityList.Contains(CityName))
             {
                 throw new ArgumentException("The city does not exist.");
             }
+            SubwayMap = null;
             SubwayMap = loader.LoadSubwayMap(@"map/" + (string)CityMap[CityName]);
+            return SubwayMap;
         }
 
         public void SelectFunction(MainWindow mainWindow, string[] args)
