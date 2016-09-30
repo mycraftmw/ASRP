@@ -57,7 +57,8 @@ namespace Core
                 foreach (XmlNode sta in stations)
                 {
                     XmlAttributeCollection a = sta.Attributes;
-                    if (a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "" || a.GetNamedItem("iu").InnerXml == "false") continue;
+
+                    if (a.GetNamedItem("iu") == null || a.GetNamedItem("iu").InnerXml == null || a.GetNamedItem("iu").InnerXml == "" || a.GetNamedItem("iu").InnerXml == "false") continue;
                     string stationName= a.GetNamedItem("sid").InnerXml;
                     if (stationName == null || stationName == "") continue;
                     double x = Convert.ToDouble(a.GetNamedItem("x").InnerXml);
