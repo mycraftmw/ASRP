@@ -1,6 +1,3 @@
-using System.Windows;
-using System.ComponentModel;
-
 namespace Core
 {
     public class Station

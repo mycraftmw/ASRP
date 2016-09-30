@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.Collections;
 using AdvancedSubwayRoutePlanning;
 
 namespace Core
@@ -9,7 +9,9 @@ namespace Core
     {
         public SubwayMap SubwayMap { get; private set; }
         public Printer Printer { get; }
-        public List<string> CityList;
+        public List<string> CityList { get; }
+
+        private Hashtable CityMap;
         private Loader loader;
         private List<Connection> route;
         private static BackgroundCore backgroundCore;
@@ -17,7 +19,10 @@ namespace Core
         private BackgroundCore()
         {
             loader = new Loader();
-            CityList = loader.LoadCityList(@"map/subway-list.xml");
+            CityMap = loader.LoadCityMap(@"map/subway-list.xml");
+            CityList = new List<string>();
+            foreach (string k in CityMap.Keys)
+                CityList.Add(k);
             SubwayMap = loader.LoadSubwayMap(@"map/beijing-subway.xml");
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
@@ -30,15 +35,12 @@ namespace Core
 
         public void RefreshMap(string CityName)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(@"map\subway-list.xml");
-            XmlNodeList cities = doc.DocumentElement.ChildNodes;
             SubwayMap = null;
-            foreach (XmlNode city in cities)
-                if (city.Attributes.GetNamedItem("name").InnerXml == CityName)
-                    SubwayMap = loader.LoadSubwayMap(city.Attributes.GetNamedItem("src").InnerXml);
-            if (SubwayMap == null)
-                throw new ArgumentException("The City does not exist!");
+            if (!CityList.Contains(CityName))
+            {
+                throw new ArgumentException("The city does not exist.");
+            }
+            SubwayMap = loader.LoadSubwayMap(@"map/" + (string)CityMap[CityName]);
         }
 
         public void SelectFunction(MainWindow mainWindow, string[] args)
@@ -68,7 +70,9 @@ namespace Core
                 }
                 else if (args.Length == 3)
                 {
-                    route = SubwayMap.GetDirections(args[1], args[2], args[0]);
+                    SubwayMap.SetStartStation(args[1]);
+                    SubwayMap.SetEndStation(args[2]);
+                    route = SubwayMap.GetDirections(args[0]);
                     Printer.PrintDirections(route);
                     mainWindow.Close();
                     return;
