@@ -66,37 +66,38 @@ namespace Core
                     SubwayMap.AddStation(stationName, x, y, isTransfer);
                     if (lastName != "")
                     {
-                        if (SubwayMap.Connections.Exists(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName && w.Type == -1))
-                        {
-                            SubwayMap.Connections.Find(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName).Type = 1;
-                            SubwayMap.AddConnection(lastName, stationName, lineName, 2);
-                            SubwayMap.AddConnection(stationName, lastName, lineName, -1);
-                        }
-                        else
-                        {
-                            SubwayMap.AddConnection(lastName, stationName, lineName, 0);
-                            SubwayMap.AddConnection(stationName, lastName, lineName, -1);
-                        }
+                        DoubleLineCheck(SubwayMap, lastName, stationName, lineName);
                     }
                     lastName = stationName;
                 }
                 if (eachline.Attributes.GetNamedItem("loop").InnerXml == "true")
                 {
                     string stationName= stations[0].Attributes.GetNamedItem("sid").InnerXml;
-                    if (SubwayMap.Connections.Exists(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName && w.Type == -1))
-                    {
-                        SubwayMap.Connections.Find(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName).Type = 1;
-                        SubwayMap.AddConnection(lastName, stationName, lineName, 2);
-                        SubwayMap.AddConnection(stationName, lastName, lineName, -1);
-                    }
-                    else
-                    {
-                        SubwayMap.AddConnection(lastName, stationName, lineName, 0);
-                        SubwayMap.AddConnection(stationName, lastName, lineName, -1);
-                    }
+                    DoubleLineCheck(SubwayMap, lastName, stationName, lineName);
                 }
             }
             return SubwayMap;
+        }
+
+        private void DoubleLineCheck(SubwayMap subwayMap, string lastName, string stationName, string lineName)
+        {
+            if (subwayMap.Connections.Exists(w => w.BeginStation.Name == lastName && w.EndStation.Name == stationName && w.Type != -1))
+            {
+                subwayMap.Connections.Find(w => w.BeginStation.Name == lastName && w.EndStation.Name == stationName && w.Type != -1).Type = 1;
+                subwayMap.AddConnection(lastName, stationName, lineName, 2);
+                subwayMap.AddConnection(stationName, lastName, lineName, -1);
+            }
+            else if (subwayMap.Connections.Exists(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName && w.Type != -1))
+            {
+                subwayMap.Connections.Find(w => w.BeginStation.Name == stationName && w.EndStation.Name == lastName && w.Type != -1).Type = 1;
+                subwayMap.AddConnection(stationName, lastName, lineName, 2);
+                subwayMap.AddConnection(lastName, stationName, lineName, -1);
+            }
+            else
+            {
+                subwayMap.AddConnection(lastName, stationName, lineName, 0);
+                subwayMap.AddConnection(stationName, lastName, lineName, -1);
+            }
         }
     }
 }
