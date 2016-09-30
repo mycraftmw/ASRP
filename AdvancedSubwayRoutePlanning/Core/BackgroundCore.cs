@@ -36,7 +36,7 @@ namespace Core
         {
             if (!CityList.Contains(CityName))
             {
-                throw new ArgumentException("The city does not exist.");
+                throw new ArgumentException("没有此城市");
             }
             SubwayMap = null;
             SubwayMap = loader.LoadSubwayMap(@"map/" + (string)CityMap[CityName]);
@@ -45,42 +45,66 @@ namespace Core
         public void SelectFunction(MainWindow mainWindow, string[] args)
         {
             mainWindow.Hide();
-
-            if (args.Length == 0)
+            if (args.Length == 1 && args[0] != "-g")
             {
+                try
+                {
+                    RefreshMap(args[0]);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("没有此城市");
+                    goto CLOSE;
+                }
                 while (true)
                 {
                     string input = System.Console.ReadLine();
                     if (input != "exit")
                     {
-                        Printer.PrintSubwayLine(SubwayMap.GetLine(input));
+                        Printer.PrintSubwayLine(SubwayMap.GetLineByLabel(input));
                     }
                     else
                     {
-                        return;
+                        goto CLOSE;
                     }
                 }
             }
             else if (args.Length == 1 && args[0] == "-g")
             {
                 mainWindow.Show();
-            }
-            else if (args.Length == 3)
-            {
-                SubwayMap.SetStartStation(args[1]);
-                SubwayMap.SetEndStation(args[2]);
-                route = SubwayMap.GetDirections(args[0]);
-                Printer.PrintDirections(route);
-                mainWindow.Close();
                 return;
+            }
+            else if (args.Length == 4)
+            {
+                try
+                {
+                    RefreshMap(args[0]);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("没有此城市");
+                    goto CLOSE;
+                }
+                SubwayMap.SetStartStation(args[2]);
+                SubwayMap.SetEndStation(args[3]);
+                try
+                {
+                    route = SubwayMap.GetDirections(args[1]);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("始末站点错误");
+                    goto CLOSE;
+                }
+                Printer.PrintDirections(route);
             }
             else
             {
                 Printer.WriteLine("输入格式错误");
-                mainWindow.Close();
-                return;
+                goto CLOSE;
             }
-
+CLOSE:
+            mainWindow.Close();
         }
     }
 }

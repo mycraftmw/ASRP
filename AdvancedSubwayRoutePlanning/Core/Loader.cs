@@ -25,7 +25,6 @@ namespace Core
             XmlNodeList cities = doc.DocumentElement.ChildNodes;
             foreach (XmlNode city in cities)
             {
-                Console.WriteLine(city.Attributes.GetNamedItem("name").InnerXml + " " + city.Attributes.GetNamedItem("src").InnerXml);
                 CityMap.Add(city.Attributes.GetNamedItem("name").InnerXml, city.Attributes.GetNamedItem("src").InnerXml);
             }
 
@@ -51,7 +50,8 @@ namespace Core
             {
                 string lineName = eachline.Attributes.GetNamedItem("lid").InnerXml;
                 string lineColor = eachline.Attributes.GetNamedItem("lc").InnerXml.Remove(0,2);
-                SubwayMap.AddSubwayLine(lineName, "#" + lineColor);
+                string lineLabel = eachline.Attributes.GetNamedItem("lb").InnerXml;
+                SubwayMap.AddSubwayLine(lineName, lineLabel, "#" + lineColor);
                 XmlNodeList stations = eachline.ChildNodes;
                 string lastName = "";
                 foreach (XmlNode sta in stations)

@@ -27,7 +27,7 @@ namespace Core
                 output.Write(x.BeginStation);
                 if (x.LineName != ls)
                 {
-                    output.Write("换乘地铁" + x.LineName);
+                    output.Write(" 换乘" + x.LineName);
                     ls = x.LineName;
                 }
                 output.WriteLine();
