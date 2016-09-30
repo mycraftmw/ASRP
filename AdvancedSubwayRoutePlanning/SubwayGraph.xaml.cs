@@ -35,6 +35,7 @@ namespace AdvancedSubwayRoutePlanning
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
         private Station flashStation;
         private int flashStationIndex = 0;
+        private int prevFlashStationIndex = 0;
 
         private delegate void TimerDispatcherDelegate();
         #endregion
@@ -81,11 +82,13 @@ namespace AdvancedSubwayRoutePlanning
             {
                 if (flashStationIndex == subwayMap.CurRoute.Count)
                 {
+                    prevFlashStationIndex = flashStationIndex;
                     flashStation = subwayMap.CurRoute[flashStationIndex - 1].EndStation;
                     flashStationIndex = 0;
                 }
                 else
                 {
+                    prevFlashStationIndex = flashStationIndex;
                     flashStation = subwayMap.CurRoute[flashStationIndex].BeginStation;
                     flashStationIndex++;
                 }
@@ -95,7 +98,7 @@ namespace AdvancedSubwayRoutePlanning
 
         private void IntializeStationFlash()
         {
-            Timer timer = new Timer(400);
+            Timer timer = new Timer(500);
             timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -140,6 +143,9 @@ namespace AdvancedSubwayRoutePlanning
             //取消滚动与缩放
             dc.Pop();
             dc.Pop();
+
+            //绘制已经过站点数
+            drawPassedStationNum(dc);
 
             //绘制遮挡框架
             drawFrame(dc);
@@ -247,6 +253,15 @@ namespace AdvancedSubwayRoutePlanning
                 Pen pen = new Pen(new SolidColorBrush(Colors.Black), flashStation.IsTransfer ? 1 : 0.5);
                 double r = flashStation.IsTransfer ? 7 : 5;
                 dc.DrawEllipse(Brushes.OrangeRed, pen, new Point(flashStation.X, flashStation.Y), r, r);
+            }
+        }
+
+        private void drawPassedStationNum(DrawingContext dc)
+        {
+            if (subwayMap.CurRoute != null && subwayMap.CurRoute.Count != 0 && flashStation != null)
+            {
+                FormattedText formattedText = createFormattedText("已经过站点数：" + prevFlashStationIndex.ToString(), 25);
+                dc.DrawText(formattedText, new Point(this.ActualWidth - formattedText.Width, 0));
             }
         }
 
