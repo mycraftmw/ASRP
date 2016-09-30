@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <l>
- <c name="北京" src="beijing-subway.xml">
- <c name="上海" src="shanghai-subway.xml">
+ <c name="北京" src="beijing-subway.xml"/>
+ <c name="上海" src="shanghai-subway.xml"/>
 </l>
