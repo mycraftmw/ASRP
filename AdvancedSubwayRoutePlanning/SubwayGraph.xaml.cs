@@ -223,10 +223,11 @@ namespace AdvancedSubwayRoutePlanning
             switch (station.Name)
             {
                 case "清华东路西口":
+                case "马当路":
                     textOffset = (int)(2 * formattedText.Height + 2 * r);
                     break;
             }
-            dc.DrawText(formattedText, new Point(station.X - formattedText.Width / 2, station.Y + formattedText.Height + r - textOffset));
+            dc.DrawText(formattedText, new Point(station.X + 3, station.Y + formattedText.Height + r - textOffset));
         }
 
         private void drawFlashPoint(DrawingContext dc)
@@ -260,6 +261,7 @@ namespace AdvancedSubwayRoutePlanning
             }
         }
 
+        //绘制当前路径
         private void drawCurRoute(DrawingContext dc)
         {
             if (subwayMap.CurRoute == null || subwayMap.CurRoute.Count == 0)
@@ -291,6 +293,7 @@ namespace AdvancedSubwayRoutePlanning
             }
         }
 
+        //绘制地铁线路列表
         private void drawLineList(DrawingContext dc)
         {
             double maxNameLenth = 0;
@@ -406,42 +409,44 @@ namespace AdvancedSubwayRoutePlanning
 
                     //查找乘车线路
                     Cursor = Cursors.Wait;
+                    string mode;
+
+                    if (((App)App.Current).IsShortestPlaning)
+                        mode = "-b";
+                    else
+                        mode = "-c";
+
                     try
                     {
-                        string mode;
-
-                        if (((App)App.Current).IsShortestPlaning)
-                            mode = "-b";
-                        else
-                            mode = "-c";
-
-                        try
-                        {
-                            subwayMap.CurRoute = subwayMap.GetDirections(mode);
-                            if (subwayMap.CurRoute.Count == 0)
-                                throw new Exception("起始/终点站点相同！");
-                            ResetFlashIndex();
-                        }
-                        catch (Exception ex)
-                        {
-                            ErrorWindow errorWindow = new ErrorWindow();
-                            errorWindow.textBlock_Msg.Text = ex.Message;
-                            errorWindow.Show();
-                            return;
-                        }
-
+                        if (subwayMap.CurRoute != null)
+                            subwayMap.CurRoute.Clear();
                         displayRouteUnitList.Clear();
+                        subwayMap.CurRoute = subwayMap.GetDirections(mode);
+
+                        if (subwayMap.CurRoute.Count == 0)
+                            throw new Exception("起始/终点站点相同！");
+
+                        ResetFlashIndex();
+
                         displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
                         foreach (Connection connection in subwayMap.CurRoute)
                         {
                             displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
                         }
-
-                        InvalidateVisual();
+                    }
+                    catch (Exception ex)
+                    {
+                        subwayMap.SetStartStation("");
+                        subwayMap.SetEndStation("");
+                        ErrorWindow errorWindow = new ErrorWindow();
+                        errorWindow.textBlock_Msg.Text = ex.Message;
+                        errorWindow.Show();
+                        return;
                     }
                     finally
                     {
                         Cursor = Cursors.Arrow;
+                        InvalidateVisual();
                     }
                 }
             }
