@@ -71,10 +71,15 @@
             </GroupBox>
         </Grid>
 
-        <StackPanel x:Name="stackPanel_MapLoad" Grid.Row="1" Grid.Column="0">
-        </StackPanel>
+        <Grid x:Name="stackPanel_MapLoad" Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <TextBlock x:Name="block_Version" Grid.Row="1" Grid.Column="1" Margin="0,5,5,0" HorizontalAlignment="Stretch" TextAlignment="Right" Text="v1.0" VerticalAlignment="Stretch"/>
+            <TextBlock x:Name="block_Copyright" Margin="0,5,5,0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" TextAlignment="Left" Text="Copyright © 2016 Deng(F) &amp; Yue(B). All rights reserved. Refer to Lave Zhang." VerticalAlignment="Stretch"/>
+            <TextBlock x:Name="block_Version"  Margin="0,5,5,0" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" TextAlignment="Right" Text="v2.0" VerticalAlignment="Stretch"/>
+        </Grid>
 
     </Grid>
 </Window>
