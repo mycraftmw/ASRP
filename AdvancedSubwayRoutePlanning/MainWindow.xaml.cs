@@ -62,32 +62,42 @@ namespace AdvancedSubwayRoutePlanning
             else
                 mode = "-c";
 
+            Cursor = Cursors.Wait;
+
             try
             {
+                if (subwayMap.CurRoute != null)
+                    subwayMap.CurRoute.Clear();
+                displayRouteUnitList.Clear();
                 subwayMap.SetStartStation(comboBox_StartStation.Text);
                 subwayMap.SetEndStation(comboBox_EndStation.Text);
                 subwayMap.CurRoute = subwayMap.GetDirections(mode);
+
                 if (subwayMap.CurRoute.Count == 0)
                     throw new Exception("起始/终点站点相同！");
+
+                displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
+                foreach (Connection connection in (subwayMap.CurRoute))
+                {
+                    displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
+                }
+
                 this.subwayGraph.ResetFlashIndex();
             }
             catch (Exception ex)
             {
+                subwayMap.SetStartStation("");
+                subwayMap.SetEndStation("");
                 ErrorWindow errorWindow = new ErrorWindow();
                 errorWindow.textBlock_Msg.Text = ex.Message;
                 errorWindow.Show();
                 return;
             }
-
-
-            displayRouteUnitList.Clear();
-            displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
-            foreach (Connection connection in (subwayMap.CurRoute))
+            finally
             {
-                displayRouteUnitList.Add(new DisplayRouteUnit(connection.EndStation.Name, connection.LineName));
+                Cursor = Cursors.Arrow;
+                subwayGraph.InvalidateVisual();
             }
-
-            subwayGraph.InvalidateVisual();
         }
 
         #endregion
