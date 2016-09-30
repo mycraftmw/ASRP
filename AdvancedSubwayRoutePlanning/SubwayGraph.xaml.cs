@@ -212,11 +212,16 @@ namespace AdvancedSubwayRoutePlanning
 
         private void drawStation(DrawingContext dc, Station station)
         {
-            int textOffset = 12;
+            int textYOffset = -12;
+            int textXOffset = 0;
             //绘制地铁站圆圈
             Pen pen = new Pen(new SolidColorBrush(Colors.Black), station.IsTransfer ? 1 : 0.5);
             double r = station.IsTransfer ? 7 : 5;
             dc.DrawEllipse(Brushes.White, pen, new Point(station.X, station.Y), r, r);
+            if (station.IsTransfer)
+            {
+                dc.DrawEllipse(Brushes.Black, pen, new Point(station.X, station.Y), r - 2, r - 2);
+            }
 
             //绘制地铁站名
             FormattedText formattedText = createFormattedText(station.Name, 9);
@@ -224,10 +229,15 @@ namespace AdvancedSubwayRoutePlanning
             {
                 case "清华东路西口":
                 case "马当路":
-                    textOffset = (int)(2 * formattedText.Height + 2 * r);
+                case "金融高新区":
+                    textYOffset = -(int)(2 * formattedText.Height + 2 * r);
                     break;
+                case "森林公园南门":
+                    textXOffset = -(int)(formattedText.Width + 5);
+                    break;
+
             }
-            dc.DrawText(formattedText, new Point(station.X + 3, station.Y + formattedText.Height + r - textOffset));
+            dc.DrawText(formattedText, new Point(station.X + 3 + textXOffset, station.Y + formattedText.Height + r + textYOffset));
         }
 
         private void drawFlashPoint(DrawingContext dc)

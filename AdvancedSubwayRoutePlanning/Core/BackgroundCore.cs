@@ -19,7 +19,7 @@ namespace Core
         private BackgroundCore()
         {
             loader = new Loader();
-            CityMap = loader.LoadCityMap(@"map/subway-list.xml");
+            CityMap = loader.LoadCityMap(@"Map/subway-list.xml");
             CityList = new List<string>();
             foreach (string k in CityMap.Keys)
                 CityList.Add(k);
@@ -39,7 +39,7 @@ namespace Core
                 throw new ArgumentException("没有此城市");
             }
             SubwayMap = null;
-            SubwayMap = loader.LoadSubwayMap(@"map/" + (string)CityMap[CityName]);
+            SubwayMap = loader.LoadSubwayMap(@"Map/" + (string)CityMap[CityName]);
         }
 
         public void SelectFunction(MainWindow mainWindow, string[] args)
