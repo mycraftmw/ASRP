@@ -95,7 +95,7 @@ namespace AdvancedSubwayRoutePlanning
 
         private void IntializeStationFlash()
         {
-            Timer timer = new Timer(500);
+            Timer timer = new Timer(400);
             timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             timer.AutoReset = true;
             timer.Enabled = true;
