@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Core;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
+using System.Timers;
 
 namespace AdvancedSubwayRoutePlanning
 {
@@ -31,7 +33,10 @@ namespace AdvancedSubwayRoutePlanning
         private Point mouseDownPoint;
         private Point mouseLastPoint;
         private ObservableCollection<DisplayRouteUnit> displayRouteUnitList;
+        private Station flashStation;
+        private int flashStationIndex = 0;
 
+        private delegate void TimerDispatcherDelegate();
         #endregion
 
         #region 构造区域
@@ -39,8 +44,66 @@ namespace AdvancedSubwayRoutePlanning
         public SubwayGraph()
         {
             InitializeComponent();
+            IntializeStationFlash();
             this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
             this.displayRouteUnitList = ((App)App.Current).DisplayRouteUnitList;
+        }
+
+        #endregion
+
+        #region 逻辑支撑函数区域
+
+        public void SetSubwayMap()
+        {
+            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
+        }
+
+        //计算两点距离
+        private double Distance(Point pt1, Point pt2)
+        {
+            return (double)Math.Sqrt((pt1.X - pt2.X) * (pt1.X - pt2.X) + (pt1.Y - pt2.Y) * (pt1.Y - pt2.Y));
+        }
+
+        private Rect stationRect(Station station)
+        {
+            double r = station.IsTransfer ? 7 : 5;
+            return new Rect(station.X - r - 1, station.Y - r - 1, r * 2 + 1, r * 2 + 1);
+        }
+
+        private void OnTimedEvent(object sender, EventArgs e)
+         {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, new TimerDispatcherDelegate(refreshFlashStation));
+        }
+
+        private void refreshFlashStation()
+        {
+            if (subwayMap != null && subwayMap.CurRoute != null && subwayMap.CurRoute.Count != 0)
+            {
+                if (flashStationIndex == subwayMap.CurRoute.Count)
+                {
+                    flashStation = subwayMap.CurRoute[flashStationIndex - 1].EndStation;
+                    flashStationIndex = 0;
+                }
+                else
+                {
+                    flashStation = subwayMap.CurRoute[flashStationIndex].BeginStation;
+                    flashStationIndex++;
+                }
+                InvalidateVisual();
+            }
+        }
+
+        private void IntializeStationFlash()
+        {
+            Timer timer = new Timer(500);
+            timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            timer.AutoReset = true;
+            timer.Enabled = true;
+        }
+
+        public void ResetFlashIndex()
+        {
+            flashStationIndex = 0;
         }
 
         #endregion
@@ -67,6 +130,9 @@ namespace AdvancedSubwayRoutePlanning
 
             //绘制当前乘车路线
             drawCurRoute(dc);
+
+            //绘制闪烁点
+            drawFlashPoint(dc);
 
             //绘制起点和终点
             drawStartAndEndStations(dc);
@@ -100,37 +166,6 @@ namespace AdvancedSubwayRoutePlanning
             group.Children.Add(rect2);
 
             dc.DrawGeometry(Brushes.White, new Pen(Brushes.Black, 0), group);
-        }
-
-        private void drawLineList(DrawingContext dc)
-        {
-            double maxNameLenth = 0;
-
-            //获取字符集字符最长长度
-            foreach (SubwayLine line in subwayMap.SubwayLines)
-            {
-                FormattedText formattedText = createFormattedText(line.Name, 12);
-                if (formattedText.Width > maxNameLenth)
-                    maxNameLenth = formattedText.Width;
-            }
-
-            //遮罩层
-            Rect rc = new Rect(5, 5, 60 + maxNameLenth, (subwayMap.SubwayLines.Count + 1) * 15);
-            dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(180, 245, 245, 245)), new Pen(Brushes.Black, 0.5), rc);
-
-            //线路列表
-            double y = rc.Y + 15;
-            foreach (SubwayLine line in subwayMap.SubwayLines)
-            {
-                //绘制线路标示线
-                dc.DrawLine(new Pen(new SolidColorBrush(hexToColor(line.Color)), 5), new Point(rc.X + 10, y), new Point(rc.X + 50, y));
-
-                //绘制线路名
-                FormattedText formattedText = createFormattedText(line.Name, 12);
-                dc.DrawText(formattedText, new Point(rc.X + 55, y - formattedText.Height / 2));
-
-                y += 15;
-            }
         }
 
         private void drawSubwayGraph(DrawingContext dc)
@@ -194,6 +229,16 @@ namespace AdvancedSubwayRoutePlanning
             dc.DrawText(formattedText, new Point(station.X - formattedText.Width / 2, station.Y + formattedText.Height + r - textOffset));
         }
 
+        private void drawFlashPoint(DrawingContext dc)
+        {
+            if (subwayMap.CurRoute != null && subwayMap.CurRoute.Count != 0 && flashStation != null)
+            {
+                Pen pen = new Pen(new SolidColorBrush(Colors.Black), flashStation.IsTransfer ? 1 : 0.5);
+                double r = flashStation.IsTransfer ? 7 : 5;
+                dc.DrawEllipse(Brushes.OrangeRed, pen, new Point(flashStation.X, flashStation.Y), r, r);
+            }
+        }
+
         private void drawStartAndEndStations(DrawingContext dc)
         {
             //绘制起点
@@ -246,15 +291,40 @@ namespace AdvancedSubwayRoutePlanning
             }
         }
 
-        #endregion
-
-        #region 支撑函数区域
-
-        public void SetSubwayMap()
+        private void drawLineList(DrawingContext dc)
         {
-            this.subwayMap = BackgroundCore.GetBackgroundCore().SubwayMap;
+            double maxNameLenth = 0;
+
+            //获取字符集字符最长长度
+            foreach (SubwayLine line in subwayMap.SubwayLines)
+            {
+                FormattedText formattedText = createFormattedText(line.Name, 12);
+                if (formattedText.Width > maxNameLenth)
+                    maxNameLenth = formattedText.Width;
+            }
+
+            //遮罩层
+            Rect rc = new Rect(5, 5, 60 + maxNameLenth, (subwayMap.SubwayLines.Count + 1) * 15);
+            dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(180, 245, 245, 245)), new Pen(Brushes.Black, 0.5), rc);
+
+            //线路列表
+            double y = rc.Y + 15;
+            foreach (SubwayLine line in subwayMap.SubwayLines)
+            {
+                //绘制线路标示线
+                dc.DrawLine(new Pen(new SolidColorBrush(hexToColor(line.Color)), 5), new Point(rc.X + 10, y), new Point(rc.X + 50, y));
+
+                //绘制线路名
+                FormattedText formattedText = createFormattedText(line.Name, 12);
+                dc.DrawText(formattedText, new Point(rc.X + 55, y - formattedText.Height / 2));
+
+                y += 15;
+            }
         }
 
+        #endregion
+
+        #region 绘图支撑函数区域
 
         //以o为源点，旋转v，角度为angle，缩放为scale
         private Point Rotate(Point v, Point o, double angle, double scale)
@@ -266,12 +336,6 @@ namespace AdvancedSubwayRoutePlanning
             double x = o.X + v.X * rx - v.Y * ry;
             double y = o.Y + v.X * ry + v.Y * rx;
             return new Point((int)x, (int)y);
-        }
-
-        //计算两点距离
-        private double Distance(Point pt1, Point pt2)
-        {
-            return (double)Math.Sqrt((pt1.X - pt2.X) * (pt1.X - pt2.X) + (pt1.Y - pt2.Y) * (pt1.Y - pt2.Y));
         }
 
         //简化设置FormattedText
@@ -314,12 +378,6 @@ namespace AdvancedSubwayRoutePlanning
             return new Rect(pt.X, pt.Y, (int)(rect.Width / zoomScale), (int)(rect.Height / zoomScale));
         }
 
-        private Rect stationRect(Station station)
-        {
-            double r = station.IsTransfer ? 7 : 5;
-            return new Rect(station.X - r - 1, station.Y - r - 1, r * 2 + 1, r * 2 + 1);
-        }
-
         #endregion
 
         #region 事件区域
@@ -357,10 +415,20 @@ namespace AdvancedSubwayRoutePlanning
                         else
                             mode = "-c";
 
-                        subwayMap.CurRoute = subwayMap.GetDirections(mode);
-
-                        if ((subwayMap.CurRoute == null || subwayMap.CurRoute.Count == 0))
+                        try
+                        {
+                            subwayMap.CurRoute = subwayMap.GetDirections(mode);
+                            if (subwayMap.CurRoute.Count == 0)
+                                throw new Exception("起始/终点站点相同！");
+                            ResetFlashIndex();
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorWindow errorWindow = new ErrorWindow();
+                            errorWindow.textBlock_Msg.Text = ex.Message;
+                            errorWindow.Show();
                             return;
+                        }
 
                         displayRouteUnitList.Clear();
                         displayRouteUnitList.Add(new DisplayRouteUnit(subwayMap.CurRoute[0].BeginStation.Name, subwayMap.CurRoute[0].LineName));
@@ -386,6 +454,7 @@ namespace AdvancedSubwayRoutePlanning
                 if (subwayMap.CurRoute != null)
                     subwayMap.CurRoute.Clear();
                 displayRouteUnitList.Clear();
+                flashStation = null;
             }
 
             InvalidateVisual();

@@ -67,8 +67,9 @@ namespace AdvancedSubwayRoutePlanning
                 subwayMap.SetStartStation(comboBox_StartStation.Text);
                 subwayMap.SetEndStation(comboBox_EndStation.Text);
                 subwayMap.CurRoute = subwayMap.GetDirections(mode);
-                if (subwayMap.CurRoute == null)
+                if (subwayMap.CurRoute.Count == 0)
                     throw new Exception("起始/终点站点相同！");
+                this.subwayGraph.ResetFlashIndex();
             }
             catch (Exception ex)
             {
