@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Collections;
 using AdvancedSubwayRoutePlanning;
@@ -23,12 +24,22 @@ namespace Core
             CityList = new List<string>();
             foreach (string k in CityMap.Keys)
                 CityList.Add(k);
+            foreach (string v in CityMap.Values)
+                if (!File.Exists(@"Map/" + v))
+                    throw new Exception();
             Printer = new Printer(System.Console.OpenStandardOutput());
         }
 
         public static BackgroundCore GetBackgroundCore()
         {
-            if (backgroundCore == null) backgroundCore = new BackgroundCore();
+            try
+            {
+                if (backgroundCore == null) backgroundCore = new BackgroundCore();
+            }
+            catch (Exception)
+            {
+                throw new Exception("地图文件信息错误");
+            }
             return backgroundCore;
         }
 
