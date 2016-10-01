@@ -112,12 +112,14 @@ namespace AdvancedSubwayRoutePlanning
 
         private void radioButton_Shortest_Click(object sender, RoutedEventArgs e)
         {
+            ((App)App.Current).IsShortestPlaning = (bool)radioButton_Shortest.IsChecked;
             if (subwayMap != null && subwayMap.StartStation != null && subwayMap.EndStation != null)
                 searchRoute();
         }
 
         private void radioButton_Least_Click(object sender, RoutedEventArgs e)
         {
+            ((App)App.Current).IsShortestPlaning = (bool)radioButton_Shortest.IsChecked;
             if (subwayMap != null && subwayMap.StartStation != null && subwayMap.EndStation != null)
                 searchRoute();
         }
