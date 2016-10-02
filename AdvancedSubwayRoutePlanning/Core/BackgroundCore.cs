@@ -6,7 +6,7 @@ using AdvancedSubwayRoutePlanning;
 
 namespace Core
 {
-    class BackgroundCore
+    public class BackgroundCore
     {
         public SubwayMap SubwayMap { get; private set; }
         public List<string> CityList { get; }

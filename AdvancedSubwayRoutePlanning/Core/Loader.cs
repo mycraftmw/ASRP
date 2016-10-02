@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Core
 {
-    class Loader
+    public class Loader
     {
         public Loader() { }
 
