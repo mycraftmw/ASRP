@@ -9,9 +9,9 @@ namespace Core
     class BackgroundCore
     {
         public SubwayMap SubwayMap { get; private set; }
-        public Printer Printer { get; }
         public List<string> CityList { get; }
 
+        private Printer printer;
         private Hashtable CityMap;
         private Loader loader;
         private List<Connection> route;
@@ -27,7 +27,7 @@ namespace Core
             foreach (string v in CityMap.Values)
                 if (!File.Exists(@"Map/" + v))
                     throw new Exception();
-            Printer = new Printer(System.Console.OpenStandardOutput());
+            printer = new Printer(System.Console.OpenStandardOutput());
         }
 
         public static BackgroundCore GetBackgroundCore()
@@ -72,7 +72,7 @@ namespace Core
                     string input = System.Console.ReadLine();
                     if (input != "exit")
                     {
-                        Printer.PrintSubwayLine(SubwayMap.GetLineByLabel(input));
+                        printer.PrintSubwayLine(SubwayMap.GetLineByLabel(input));
                     }
                     else
                     {
@@ -107,11 +107,11 @@ namespace Core
                     Console.WriteLine("始末站点错误");
                     goto CLOSE;
                 }
-                Printer.PrintDirections(route);
+                printer.PrintDirections(route);
             }
             else
             {
-                Printer.WriteLine("输入格式错误");
+                printer.WriteLine("输入格式错误");
                 goto CLOSE;
             }
 CLOSE:
